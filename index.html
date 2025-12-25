@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NeuRecovery</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* BrainBuddy Inspired Variables */
+    :root {
+      --bg: #0f172a;
+      --card: rgba(30, 41, 59, 0.7);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --danger: #fb7185;
+      --success: #34d399;
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    }
+
+    /* Ultra Dark Mode */
+    body.ultra {
+      --bg: #020617;
+      --card: rgba(15, 23, 42, 0.8);
+      --gradient-bg: linear-gradient(180deg, #020617 0%, #000000 100%);
+      --accent: #818cf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      background: var(--gradient-bg);
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px 100px 16px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .container {
+      max-width: 450px;
+      margin: auto;
+    }
+
+    /* Glassmorphism Cards */
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+    h2 { font-size: 1.1rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
+
+    /* Modern Buttons */
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: 16px;
+      border: none;
+      background: var(--accent);
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      margin-bottom: 10px;
+    }
+
+    button:active { transform: scale(0.97); }
+
+    button.secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* Tombol Clear Kecil */
+    .btn-clear {
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 8px;
+      margin-top: 10px;
+      margin-bottom: 0;
+      text-decoration: underline;
+      opacity: 0.6;
+    }
+    .btn-clear:hover { opacity: 1; color: var(--danger); }
+
+    .counter {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text);
+      margin: 10px 0;
+      background: linear-gradient(to right, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+
+    /* Theme Switcher Toggle */
+    .theme-switcher {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(0,0,0,0.2);
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .theme-btn {
+      flex: 1;
+      padding: 8px;
+      font-size: 12px;
+      border-radius: 8px;
+      margin-bottom: 0;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .theme-btn.active {
+      background: var(--card);
+      color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Urge Log Styling */
+    .log-container { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    .log-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-radius: 14px; background: rgba(255,255,255,0.03);
+      border-left: 4px solid var(--muted); font-size: 14px;
+    }
+    .log-item.muncul { border-left-color: var(--danger); }
+    .log-item.mereda { border-left-color: var(--success); }
+    .log-time { color: var(--muted); font-size: 12px; }
+    .log-label { font-weight: 600; }
+
+    /* Intro Screen */
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease;
+    }
+
+    .intro h1 { font-size: 2.5rem; background: linear-gradient(to bottom, #fff, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+  </style>
+</head>
+
+<body>
+
+<div id="intro" class="intro">
+  <h1>NeuRecovery</h1>
+  <p style="color:var(--accent)">Mind over Matter</p>
+</div>
+
+<div id="app" style="display:none;">
+  <div class="container">
+    
+    <div class="theme-switcher">
+      <button class="theme-btn active" id="btnDark" onclick="setTheme('dark')">Dark</button>
+      <button class="theme-btn" id="btnUltra" onclick="setTheme('ultra')">Ultra Dark</button>
+    </div>
+
+    <div class="card" style="text-align: center; border: none; background: transparent; box-shadow: none;">
+      <h1>NeuRecovery</h1>
+      <p style="color:var(--muted)">Satu keputusan pada satu waktu.</p>
+    </div>
+
+    <div class="card" style="text-align: center;">
+      <h2>Waktu Pemulihan</h2>
+      <div class="counter" id="dayCounter">0</div>
+      <p style="font-size: 14px; color: var(--muted)">HARI TANPA RELAPSE</p>
+    </div>
+
+    <div class="card">
+      <h2>Check-in</h2>
+      <button onclick="checkIn()">Saya Tetap Sadar Hari Ini</button>
+      <p id="checkinStatus" style="font-size: 13px; text-align: center; margin-top: 10px;"></p>
+    </div>
+
+    <div class="card">
+      <h2>Urge Tracker</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button style="background: rgba(251, 113, 133, 0.15); color: var(--danger); border: 1px solid var(--danger);" onclick="logUrge('muncul')">
+          Urge Muncul
+        </button>
+        <button style="background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid var(--success);" onclick="logUrge('mereda')">
+          Urge Mereda
+        </button>
+      </div>
+      
+      <div id="urgeLogList" class="log-container">
+        </div>
+
+      <button class="btn-clear" onclick="clearUrgeHistory()">Clear History</button>
+    </div>
+
+    <div class="card" style="border: 1px solid rgba(251, 113, 133, 0.3);">
+      <h2 style="color: var(--danger)">Butuh Bantuan Segera?</h2>
+      <button style="background: var(--danger); color: white;" onclick="activatePanic()">
+        Aktifkan SOS Mode
+      </button>
+    </div>
+
+    <div class="card" id="panicMode" style="display:none; background: rgba(0,0,0,0.4); border: 2px solid var(--danger);">
+      <h2 style="color: white">Bernapaslah...</h2>
+      <p id="panicText" style="color: white">Tarik napas dalam 4 detik, tahan, buang pelan.</p>
+      <div class="counter" id="breathCounter" style="color: var(--danger);">30</div>
+      <button class="secondary" onclick="exitPanic()">Sudah Lebih Baik</button>
+    </div>
+
+    <div class="card">
+      <h2>Pengaturan Data</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button class="secondary" onclick="exportData()">Backup</button>
+        <button class="secondary" onclick="importData()">Restore</button>
+      </div>
+      <input type="file" id="fileInput" style="display:none;" />
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Theme Logic
+  function setTheme(mode) {
+    const body = document.body;
+    const btnDark = document.getElementById('btnDark');
+    const btnUltra = document.getElementById('btnUltra');
+    
+    if(mode === 'ultra') {
+      body.classList.add('ultra');
+      btnUltra.classList.add('active');
+      btnDark.classList.remove('active');
+      localStorage.setItem('theme', 'ultra');
+    } else {
+      body.classList.remove('ultra');
+      btnDark.classList.add('active');
+      btnUltra.classList.remove('active');
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  if(savedTheme) setTheme(savedTheme);
+
+  // Intro Logic
+  setTimeout(() => {
+    const intro = document.getElementById("intro");
+    intro.style.opacity = "0";
+    setTimeout(() => {
+      intro.style.display = "none";
+      document.getElementById("app").style.display = "block";
+      renderUrges(); 
+    }, 800);
+  }, 1500);
+
+  // Counter Logic
+  let startDate = localStorage.getItem("startDate") || new Date().toISOString();
+  if (!localStorage.getItem("startDate")) localStorage.setItem("startDate", startDate);
+
+  function updateDayCounter() {
+    const diff = Math.floor((new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24));
+    document.getElementById("dayCounter").innerText = diff;
+  }
+  updateDayCounter();
+
+  function checkIn() {
+    localStorage.setItem("lastCheckin", new Date().toDateString());
+    const status = document.getElementById("checkinStatus");
+    status.innerText = "✓ Komitmen tercatat untuk hari ini.";
+    status.style.color = "var(--success)";
+  }
+
+  // URGE LOGIC
+  let urges = JSON.parse(localStorage.getItem("urges")) || [];
+
+  function logUrge(status) {
+    const entry = {
+      status,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    urges.unshift(entry); 
+    if (urges.length > 5) urges.pop(); 
+    localStorage.setItem("urges", JSON.stringify(urges));
+    renderUrges();
+  }
+
+  function renderUrges() {
+    const container = document.getElementById("urgeLogList");
+    if(!container) return;
+    container.innerHTML = urges.length === 0 ? 
+      `<p style="text-align:center; color:var(--muted); font-size:12px; margin-top:10px;"></p>` : "";
+    
+    urges.forEach(u => {
+      const div = document.createElement("div");
+      div.className = `log-item ${u.status}`;
+      div.innerHTML = `
+        <span class="log-label">${u.status === 'muncul' ? '⚠️ Muncul' : '✅ Mereda'}</span>
+        <span class="log-time">${u.time}</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // FUNGSI BARU: CLEAR HISTORY
+  function clearUrgeHistory() {
+    if(confirm("Hapus semua riwayat tracker?")) {
+      urges = [];
+      localStorage.setItem("urges", JSON.stringify(urges));
+      renderUrges();
+    }
+  }
+
+  // SOS Logic
+  let panicTimer;
+  function activatePanic() {
+    document.getElementById("panicMode").style.display = "block";
+    let seconds = 30;
+    document.getElementById("breathCounter").innerText = seconds;
+    panicTimer = setInterval(() => {
+      seconds--;
+      document.getElementById("breathCounter").innerText = seconds;
+      if (seconds <= 0) {
+        clearInterval(panicTimer);
+        document.getElementById("panicText").innerText = "Sangat bagus. Dorongan ini hanya sementara.";
+      }
+    }, 1000);
+  }
+
+  function exitPanic() {
+    clearInterval(panicTimer);
+    document.getElementById("panicMode").style.display = "none";
+  }
+
+  // Data Logic
+  function exportData() {
+    const data = { startDate, urges };
+    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `backup.json`;
+    a.click();
+  }
+
+  function importData() { document.getElementById("fileInput").click(); }
+
+  document.getElementById("fileInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const data = JSON.parse(e.target.result);
+      if (data.startDate) localStorage.setItem("startDate", data.startDate);
+      if (data.urges) localStorage.setItem("urges", JSON.stringify(data.urges));
+      alert("Data berhasil dipulihkan.");
+      location.reload();
+    };
+    reader.readAsText(file);
+  });
+</script>
+
+</body>
+</html>
