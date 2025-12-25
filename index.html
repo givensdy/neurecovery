@@ -246,7 +246,7 @@
 </div>
 
 <script>
-  // Theme Logic
+  // --- CONFIGURATION & THEME ---
   function setTheme(mode) {
     const body = document.body;
     const btnDark = document.getElementById('btnDark');
@@ -268,35 +268,76 @@
   const savedTheme = localStorage.getItem('theme');
   if(savedTheme) setTheme(savedTheme);
 
-  // Intro Logic
-  setTimeout(() => {
-    const intro = document.getElementById("intro");
-    intro.style.opacity = "0";
-    setTimeout(() => {
-      intro.style.display = "none";
-      document.getElementById("app").style.display = "block";
-      renderUrges(); 
-    }, 800);
-  }, 1500);
-
-  // Counter Logic
-  let startDate = localStorage.getItem("startDate") || new Date().toISOString();
-  if (!localStorage.getItem("startDate")) localStorage.setItem("startDate", startDate);
-
-  function updateDayCounter() {
-    const diff = Math.floor((new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24));
-    document.getElementById("dayCounter").innerText = diff;
+  // --- CORE LOGIC: STREAK SYSTEM ---
+  
+  // Mengambil tanggal hari ini (WIB) dalam format YYYY-MM-DD
+  function getTodayString() {
+    const now = new Date();
+    const offset = 7; // WIB GMT+7
+    const wibDate = new Date(now.getTime() + (offset * 60 * 60 * 1000));
+    return now.toISOString().split('T')[0];
   }
-  updateDayCounter();
+
+  function updateDisplay() {
+    const today = getTodayString();
+    const checkinBtn = document.querySelector("button[onclick='checkIn()']");
+    const statusText = document.getElementById("checkinStatus");
+    const dayCounterElement = document.getElementById("dayCounter");
+
+    let startDate = localStorage.getItem("startDate");
+    let lastCheckinDate = localStorage.getItem("lastCheckinDate");
+
+    // LOGIKA PERHITUNGAN HARI (STREAK)
+    if (!startDate) {
+      dayCounterElement.innerText = "0";
+    } else {
+      const start = new Date(startDate);
+      const now = new Date();
+      
+      // Hitung selisih hari kalender
+      const diffInMs = now.setHours(0,0,0,0) - start.setHours(0,0,0,0);
+      const diffInDays = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+      
+      // Jika sudah check-in hari ini, pastikan minimal terhitung hari ke-1 (atau lebih)
+      if (lastCheckinDate === today) {
+        dayCounterElement.innerText = diffInDays + 1;
+      } else {
+        dayCounterElement.innerText = diffInDays;
+      }
+    }
+
+    // LOGIKA TOMBOL CHECK-IN
+    if (lastCheckinDate === today) {
+      checkinBtn.disabled = true;
+      checkinBtn.style.opacity = "0.5";
+      checkinBtn.innerText = "Sudah Check-in Hari Ini";
+      statusText.innerText = "✓ Komitmen terjaga. Sampai jumpa besok!";
+      statusText.style.color = "var(--success)";
+    } else {
+      checkinBtn.disabled = false;
+      checkinBtn.style.opacity = "1";
+      checkinBtn.innerText = "Saya Tetap Sadar Hari Ini";
+      statusText.innerText = "Ketuk untuk mencatat progres hari ini.";
+      statusText.style.color = "var(--muted)";
+    }
+  }
 
   function checkIn() {
-    localStorage.setItem("lastCheckin", new Date().toDateString());
-    const status = document.getElementById("checkinStatus");
-    status.innerText = "✓ Komitmen tercatat untuk hari ini.";
-    status.style.color = "var(--success)";
+    const today = getTodayString();
+    let startDate = localStorage.getItem("startDate");
+
+    // Jika ini pertama kali check-in, set startDate sebagai hari ini
+    if (!startDate) {
+      localStorage.setItem("startDate", today);
+    }
+
+    // Simpan tanggal check-in terakhir
+    localStorage.setItem("lastCheckinDate", today);
+    
+    updateDisplay();
   }
 
-  // URGE LOGIC
+  // --- URGE TRACKER (TANPA OTOMATIS CHECK-IN) ---
   let urges = JSON.parse(localStorage.getItem("urges")) || [];
 
   function logUrge(status) {
@@ -314,7 +355,7 @@
     const container = document.getElementById("urgeLogList");
     if(!container) return;
     container.innerHTML = urges.length === 0 ? 
-      `<p style="text-align:center; color:var(--muted); font-size:12px; margin-top:10px;"></p>` : "";
+      `<p style="text-align:center; color:var(--muted); font-size:12px; margin-top:10px;">Belum ada log aktivitas.</p>` : "";
     
     urges.forEach(u => {
       const div = document.createElement("div");
@@ -327,7 +368,6 @@
     });
   }
 
-  // FUNGSI BARU: CLEAR HISTORY
   function clearUrgeHistory() {
     if(confirm("Hapus semua riwayat tracker?")) {
       urges = [];
@@ -336,7 +376,7 @@
     }
   }
 
-  // SOS Logic
+  // --- PANIC / SOS ---
   let panicTimer;
   function activatePanic() {
     document.getElementById("panicMode").style.display = "block";
@@ -357,14 +397,30 @@
     document.getElementById("panicMode").style.display = "none";
   }
 
-  // Data Logic
+  // --- INITIALIZATION ---
+  setTimeout(() => {
+    const intro = document.getElementById("intro");
+    intro.style.opacity = "0";
+    setTimeout(() => {
+      intro.style.display = "none";
+      document.getElementById("app").style.display = "block";
+      updateDisplay();
+      renderUrges();
+    }, 800);
+  }, 1500);
+
+  // --- DATA MANAGEMENT ---
   function exportData() {
-    const data = { startDate, urges };
+    const data = { 
+        startDate: localStorage.getItem("startDate"), 
+        lastCheckinDate: localStorage.getItem("lastCheckinDate"), 
+        urges 
+    };
     const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `backup.json`;
+    a.download = `recovery-backup.json`;
     a.click();
   }
 
@@ -377,12 +433,14 @@
     reader.onload = function (e) {
       const data = JSON.parse(e.target.result);
       if (data.startDate) localStorage.setItem("startDate", data.startDate);
+      if (data.lastCheckinDate) localStorage.setItem("lastCheckinDate", data.lastCheckinDate);
       if (data.urges) localStorage.setItem("urges", JSON.stringify(data.urges));
       alert("Data berhasil dipulihkan.");
       location.reload();
     };
     reader.readAsText(file);
   });
+</script>
 </script>
 
 </body>
