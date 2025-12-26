@@ -41,165 +41,116 @@
       background-attachment: fixed;
       color: var(--text);
       min-height: 100vh;
-      padding: 20px 16px 100px 16px;
+      padding: 20px 16px 120px 16px;
       transition: background 0.4s ease;
       overflow-x: hidden;
       text-rendering: optimizeLegibility;
     }
 
-    .container {
-      max-width: 450px;
-      margin: auto;
-    }
+    .container { max-width: 450px; margin: auto; }
 
-    /* --- ANIMATION LOGIC --- */
+    /* --- ANIMATION --- */
     @keyframes revealCard {
-      0% {
-        opacity: 0;
-        transform: translateY(20px) translateZ(0);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) translateZ(0);
-      }
+      0% { opacity: 0; transform: translateY(20px) translateZ(0); }
+      100% { opacity: 1; transform: translateY(0) translateZ(0); }
     }
-
-    .reveal {
-      opacity: 0;
-      will-change: transform, opacity;
-    }
-
-    .reveal.active {
-      animation: revealCard 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    .delay-1 { animation-delay: 0.1s; }
+    .reveal { opacity: 0; will-change: transform, opacity; }
+    .reveal.active { animation: revealCard 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    
+    .delay-1 { animation-delay: 0.1s; } 
     .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
+    .delay-3 { animation-delay: 0.3s; } 
     .delay-4 { animation-delay: 0.4s; }
-    .delay-5 { animation-delay: 0.5s; }
-    .delay-6 { animation-delay: 0.6s; }
-    .delay-7 { animation-delay: 0.7s; }
 
-    /* 60FPS Optimized Cards */
+    /* --- UI COMPONENTS --- */
     .card {
       background: var(--card);
-      backdrop-filter: blur(10px) saturate(180%);
-      -webkit-backdrop-filter: blur(10px) saturate(180%);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
       border: 1px solid var(--glass-border);
       border-radius: 24px;
       padding: 24px;
       margin-bottom: 20px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-      backface-visibility: hidden;
     }
 
-    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
     h2 { font-size: 1.1rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
 
     button {
-      width: 100%;
-      padding: 16px;
-      border-radius: 16px;
-      border: none;
-      background: var(--accent);
-      color: #0f172a;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+      width: 100%; padding: 16px; border-radius: 16px; border: none;
+      background: var(--accent); color: #0f172a; font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: 0.2s;
     }
-
     button:active { transform: scale(0.96); }
-
-    button.secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      border: 1px solid var(--glass-border);
-    }
-
-    button.danger-outline {
-      background: rgba(251, 113, 133, 0.1);
-      color: var(--danger);
-      border: 1px solid var(--danger);
-    }
-
-    /* Urge Tracker Actions Styling */
-    .urge-actions {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 15px;
-    }
-
-    .btn-text {
-      background: transparent;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 8px;
-      text-decoration: underline;
-      opacity: 0.7;
-      width: auto;
-      font-weight: 500;
-    }
+    button.secondary { background: rgba(255, 255, 255, 0.05); color: var(--text); border: 1px solid var(--glass-border); }
+    button.danger-outline { background: rgba(251, 113, 133, 0.1); color: var(--danger); border: 1px solid var(--danger); }
 
     .counter {
-      font-size: 48px;
-      font-weight: 800;
-      color: var(--text);
-      margin: 10px 0;
+      font-size: 48px; font-weight: 800; text-align: center;
       background: linear-gradient(to right, #fff, var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-align: center;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0;
     }
 
-    .theme-switcher {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      background: rgba(0,0,0,0.2);
-      padding: 4px;
-      border-radius: 12px;
-    }
-
-    .theme-btn {
-      flex: 1;
-      padding: 8px;
-      font-size: 12px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-    }
-
-    .theme-btn.active {
-      background: var(--card);
-      color: var(--accent);
-    }
-
-    .log-container { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-    .log-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 16px; border-radius: 14px; background: rgba(255,255,255,0.03);
-      border-left: 4px solid var(--muted); font-size: 14px;
-    }
-    .log-item.muncul { border-left-color: var(--danger); }
-    .log-item.mereda { border-left-color: var(--success); }
-    .log-time { font-size: 11px; color: var(--muted); text-align: right; line-height: 1.2; }
-
-    /* Modal Full History */
-    .modal {
-      position: fixed; inset: 0; background: var(--bg); z-index: 1000;
-      padding: 20px; display: none; overflow-y: auto;
-    }
-
+    /* --- INTRO STYLE (RESTORED) --- */
     .intro {
-      position: fixed; inset: 0; z-index: 999; background: #0f172a;
+      position: fixed; inset: 0; z-index: 9999; background: #0f172a;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       transition: opacity 0.8s ease;
     }
-    .intro h1 { font-size: 2.5rem; background: linear-gradient(to bottom, #fff, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .intro h1 { 
+      font-size: 2.5rem; 
+      background: linear-gradient(to bottom, #fff, #64748b); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    }
+
+    /* --- STATS TOGGLE --- */
+    .stats-nav {
+      display: flex; gap: 8px; margin-bottom: 20px; background: rgba(0,0,0,0.2); 
+      padding: 4px; border-radius: 12px;
+    }
+    .stats-btn {
+      flex: 1; padding: 10px; font-size: 11px; border-radius: 8px; border: none; 
+      background: transparent; color: var(--muted); cursor: pointer; font-weight: 600;
+    }
+    .stats-btn.active { background: var(--card); color: var(--accent); border: 1px solid var(--glass-border); }
+    .stats-content { display: none; padding: 10px 0; animation: fadeIn 0.3s ease; }
+    .stats-content.active { display: block; }
+
+    /* --- BOTTOM NAVIGATION --- */
+    .bottom-nav {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 32px); max-width: 400px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 12px 10px; z-index: 2000;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      color: var(--muted); cursor: pointer; transition: 0.3s; flex: 1;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
+
+    /* --- PAGE SYSTEM --- */
+    .page { display: none; animation: fadeIn 0.4s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- LOGS --- */
+    .log-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 14px; background: rgba(255,255,255,0.03); border-left: 4px solid var(--muted); margin-bottom: 8px; font-size: 13px; }
+    .log-item.muncul { border-left-color: var(--danger); }
+    .log-item.mereda { border-left-color: var(--success); }
+    .modal { position: fixed; inset: 0; background: var(--bg); z-index: 3000; padding: 20px; display: none; overflow-y: auto; }
+    
+    .theme-switcher { display: flex; gap: 8px; margin-bottom: 24px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px; }
+    .theme-btn { flex: 1; padding: 8px; font-size: 12px; border-radius: 8px; border: none; background: transparent; color: var(--muted); cursor: pointer; }
+    .theme-btn.active { background: var(--card); color: var(--accent); }
   </style>
 </head>
 
@@ -210,117 +161,176 @@
   <p style="color:var(--accent)">Mind over Matter</p>
 </div>
 
+<nav class="bottom-nav">
+  <div class="nav-item active" onclick="switchPage('home', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </div>
+  <div class="nav-item" onclick="switchPage('insights', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+  </div>
+  <div class="nav-item" onclick="switchPage('toolbox', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+  </div>
+  <div class="nav-item" onclick="switchPage('profile', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+  </div>
+</nav>
+
 <div id="historyModal" class="modal">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
       <h1>Riwayat Lengkap</h1>
-      <button onclick="closeHistory()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 12px;">Tutup</button>
+      <button onclick="closeHistory()" class="secondary" style="width: auto; padding: 8px 16px;">Tutup</button>
     </div>
-    <div id="fullHistoryList" class="log-container"></div>
+    <div id="fullHistoryList"></div>
   </div>
 </div>
 
 <div id="app" style="display:none;">
   <div class="container">
-    
-    <div class="theme-switcher reveal delay-1">
-      <button class="theme-btn active" id="btnDark" onclick="setTheme('dark')">Dark</button>
-      <button class="theme-btn" id="btnUltra" onclick="setTheme('ultra')">Ultra Dark</button>
-    </div>
 
-    <div class="reveal delay-2" style="text-align: center; margin-bottom: 30px; margin-top: 10px;">
-      <h1>NeuRecovery</h1>
-      <p style="color:var(--muted)">Satu keputusan pada satu waktu.</p>
-    </div>
-
-    <div class="card reveal delay-3" style="text-align: center;">
-      <h2>Waktu Pemulihan</h2>
-      <div class="counter" id="dayCounter">0</div>
-      <p style="font-size: 14px; color: var(--muted)">HARI TANPA RELAPSE</p>
-    </div>
-
-    <div class="card reveal delay-4">
-      <h2>Check-in</h2>
-      <button onclick="checkIn()">Saya Tetap Sadar Hari Ini</button>
-      <p id="checkinStatus" style="font-size: 13px; text-align: center; margin-top: 10px;"></p>
-    </div>
-
-    <div class="card reveal delay-5">
-      <h2>Urge Tracker</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button style="background: rgba(251, 113, 133, 0.15); color: var(--danger); border: 1px solid var(--danger);" onclick="logUrge('muncul')">
-          Urge Muncul
-        </button>
-        <button style="background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid var(--success);" onclick="logUrge('mereda')">
-          Urge Mereda
-        </button>
+    <section id="home" class="page active">
+      <div class="reveal delay-1" style="text-align: center; margin-bottom: 30px; margin-top: 10px;">
+        <h1>NeuRecovery</h1>
+        <p style="color:var(--muted)">Satu keputusan pada satu waktu.</p>
       </div>
-      <div id="urgeLogList" class="log-container"></div>
+
+      <div class="card reveal delay-2" style="text-align: center;">
+        <h2>Waktu Pemulihan</h2>
+        <div class="counter" id="dayCounter">0</div>
+        <p style="font-size: 14px; color: var(--muted)">HARI TANPA RELAPSE</p>
+      </div>
+
+      <div class="card reveal delay-3">
+        <h2>Check-in</h2>
+        <button onclick="checkIn()">Saya Tetap Sadar Hari Ini</button>
+        <p id="checkinStatus" style="font-size: 13px; text-align: center; margin-top: 10px;"></p>
+      </div>
+
+      <div class="card reveal delay-4">
+        <h2 style="color: var(--danger)">Relapse?</h2>
+        <button class="danger-outline" onclick="triggerRelapse()">Reset Streak Sekarang</button>
+      </div>
+    </section>
+
+    <section id="insights" class="page">
+      <h1>Insights</h1>
+      <div class="card">
+        <h2>Urge Tracker</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button style="background: rgba(251, 113, 133, 0.15); color: var(--danger); border: 1px solid var(--danger);" onclick="logUrge('muncul')">Muncul</button>
+          <button style="background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid var(--success);" onclick="logUrge('mereda')">Mereda</button>
+        </div>
+        <div id="urgeLogList" style="margin-top: 20px;"></div>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+          <button onclick="showHistory()" style="background: transparent; color: var(--muted); text-decoration: underline; width: auto; font-size: 12px; border:none; cursor:pointer;">Lihat Semua</button>
+          <button onclick="clearUrgeHistory()" style="background: transparent; color: var(--danger); text-decoration: underline; width: auto; font-size: 12px; border:none; cursor:pointer;">Clear</button>
+        </div>
+      </div>
       
-      <div class="urge-actions">
-        <button class="btn-text" onclick="showHistory()">Lihat Semua</button>
-        <button class="btn-text" onclick="clearUrgeHistory()" style="color: var(--danger)">Clear History</button>
+      <div class="card">
+        <h2>Statistik</h2>
+        <div class="stats-nav">
+            <button class="stats-btn active" onclick="switchStats('harian', this)">Harian</button>
+            <button class="stats-btn" onclick="switchStats('mingguan', this)">Mingguan</button>
+            <button class="stats-btn" onclick="switchStats('bulanan', this)">Bulanan</button>
+        </div>
+        <div id="stats-harian" class="stats-content active">
+            <p style="font-size: 13px; color: var(--muted);">Data harian terpantau stabil.</p>
+        </div>
+        <div id="stats-mingguan" class="stats-content">
+            <p style="font-size: 13px; color: var(--muted);">Ringkasan 7 hari terakhir menunjukkan progres positif.</p>
+        </div>
+        <div id="stats-bulanan" class="stats-content">
+            <p style="font-size: 13px; color: var(--muted);">Visualisasi data bulanan di sini.</p>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="card reveal delay-6">
-      <h2 style="color: var(--danger)">Relapse?</h2>
-      <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">Mereset streak akan mengembalikan progres ke nol.</p>
-      <button class="danger-outline" onclick="triggerRelapse()">Reset Streak Sekarang</button>
-    </div>
-
-    <div class="card reveal delay-7" style="border: 1px solid rgba(251, 113, 133, 0.3);">
-      <h2 style="color: var(--danger)">Butuh Bantuan Segera?</h2>
-      <button style="background: var(--danger); color: white;" onclick="activatePanic()">
-        Aktifkan SOS Mode
-      </button>
-    </div>
-
-    <div class="card" id="panicMode" style="display:none; background: rgba(0,0,0,0.4); border: 2px solid var(--danger);">
-      <h2 style="color: white">Bernapaslah...</h2>
-      <p id="panicText" style="color: white">Tarik napas dalam 4 detik, tahan, buang pelan.</p>
-      <div class="counter" id="breathCounter" style="color: var(--danger);">30</div>
-      <button class="secondary" onclick="exitPanic()">Sudah Lebih Baik</button>
-    </div>
-
-    <div class="card reveal delay-7">
-      <h2>Pengaturan Data</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button class="secondary" onclick="exportData()">Backup</button>
-        <button class="secondary" onclick="importData()">Restore</button>
+    <section id="toolbox" class="page">
+      <h1>Toolbox</h1>
+      <div class="card" style="border: 2px solid var(--danger);">
+        <h2 style="color: var(--danger)">SOS Mode</h2>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">Gunakan saat dorongan terasa sangat kuat.</p>
+        <button style="background: var(--danger); color: white;" onclick="activatePanic()">Aktifkan Bantuan</button>
       </div>
-      <input type="file" id="fileInput" style="display:none;" />
-    </div>
+
+      <div class="card" id="panicMode" style="display:none; background: rgba(0,0,0,0.4);">
+        <h2 style="color: white">Bernapaslah...</h2>
+        <p id="panicText" style="color: white">Tarik napas dalam 4 detik, tahan, buang pelan.</p>
+        <div class="counter" id="breathCounter" style="color: var(--danger);">30</div>
+        <button class="secondary" onclick="exitPanic()">Sudah Lebih Baik</button>
+      </div>
+
+      <div class="card">
+        <h2>Relaksasi Cepat</h2>
+        <p style="font-size: 14px; margin-bottom: 10px;">Teknik 5-4-3-2-1 Grounding:</p>
+        <ul style="font-size: 12px; color: var(--muted); padding-left: 20px;">
+          <li>Sebutkan 5 benda yang Anda lihat.</li>
+          <li>4 benda yang bisa disentuh.</li>
+          <li>3 suara yang didengar.</li>
+          <li>2 bau yang tercium.</li>
+          <li>1 hal yang bisa dirasakan lidah.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="profile" class="page">
+      <h1>Pengaturan & Profil</h1>
+      <div class="theme-switcher">
+        <button class="theme-btn active" id="btnDark" onclick="setTheme('dark')">Dark</button>
+        <button class="theme-btn" id="btnUltra" onclick="setTheme('ultra')">Ultra Dark</button>
+      </div>
+      <div class="card">
+        <h2>Data Cadangan</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button class="secondary" onclick="exportData()">Backup</button>
+          <button class="secondary" onclick="importData()">Restore</button>
+        </div>
+        <input type="file" id="fileInput" style="display:none;" />
+      </div>
+      <div class="card" style="text-align: center;">
+        <p style="font-size: 12px; color: var(--muted);">NeuRecovery v2.0<br>Data is stored locally.</p>
+      </div>
+    </section>
 
   </div>
 </div>
 
 <script>
+  function switchStats(type, btn) {
+    document.querySelectorAll('.stats-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.stats-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('stats-' + type).classList.add('active');
+  }
+
+  function switchPage(pageId, navEl) {
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    navEl.classList.add('active');
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
   function setTheme(mode) {
     const body = document.body;
     const btnDark = document.getElementById('btnDark');
     const btnUltra = document.getElementById('btnUltra');
     if(mode === 'ultra') {
-      body.classList.add('ultra');
-      btnUltra.classList.add('active');
-      btnDark.classList.remove('active');
-      localStorage.setItem('theme', 'ultra');
+      body.classList.add('ultra'); btnUltra.classList.add('active'); btnDark.classList.remove('active');
     } else {
-      body.classList.remove('ultra');
-      btnDark.classList.add('active');
-      btnUltra.classList.remove('active');
-      localStorage.setItem('theme', 'dark');
+      body.classList.remove('ultra'); btnDark.classList.add('active'); btnUltra.classList.remove('active');
     }
+    localStorage.setItem('theme', mode);
   }
-
+  
   const savedTheme = localStorage.getItem('theme');
   if(savedTheme) setTheme(savedTheme);
 
   function getTodayString() {
     const now = new Date();
-    const offset = 7; 
-    const wibDate = new Date(now.getTime() + (offset * 60 * 60 * 1000));
-    return now.toISOString().split('T')[0];
+    return new Date(now.getTime() + (7 * 60 * 60 * 1000)).toISOString().split('T')[0];
   }
 
   function updateDisplay() {
@@ -329,13 +339,11 @@
       const checkinBtn = document.querySelector("button[onclick='checkIn()']");
       const statusText = document.getElementById("checkinStatus");
       const dayCounterElement = document.getElementById("dayCounter");
-
       let startDate = localStorage.getItem("startDate");
       let lastCheckinDate = localStorage.getItem("lastCheckinDate");
 
-      if (!startDate) {
-        dayCounterElement.innerText = "0";
-      } else {
+      if (!startDate) dayCounterElement.innerText = "0";
+      else {
         const start = new Date(startDate);
         const now = new Date();
         const diffInMs = now.setHours(0,0,0,0) - start.setHours(0,0,0,0);
@@ -344,176 +352,95 @@
       }
 
       if (lastCheckinDate === today) {
-        if(checkinBtn) {
-          checkinBtn.disabled = true;
-          checkinBtn.style.opacity = "0.5";
-          checkinBtn.innerText = "Sudah Check-in Hari Ini";
-        }
-        if(statusText) {
-          statusText.innerText = "✓ Komitmen terjaga. Sampai jumpa besok!";
-          statusText.style.color = "var(--success)";
-        }
+        if(checkinBtn) { checkinBtn.disabled = true; checkinBtn.style.opacity = "0.5"; checkinBtn.innerText = "Sudah Check-in"; }
+        if(statusText) { statusText.innerText = "✓ Komitmen terjaga."; statusText.style.color = "var(--success)"; }
       } else {
-        if(checkinBtn) {
-          checkinBtn.disabled = false;
-          checkinBtn.style.opacity = "1";
-          checkinBtn.innerText = "Saya Tetap Sadar Hari Ini";
-        }
-        if(statusText) {
-          statusText.innerText = "Ketuk untuk mencatat progres hari ini.";
-          statusText.style.color = "var(--muted)";
-        }
+        if(checkinBtn) { checkinBtn.disabled = false; checkinBtn.style.opacity = "1"; checkinBtn.innerText = "Saya Tetap Sadar Hari Ini"; }
+        if(statusText) { statusText.innerText = "Ketuk untuk mencatat progres."; statusText.style.color = "var(--muted)"; }
       }
     });
   }
 
   function checkIn() {
     const today = getTodayString();
-    let startDate = localStorage.getItem("startDate");
-    if (!startDate) localStorage.setItem("startDate", today);
+    if (!localStorage.getItem("startDate")) localStorage.setItem("startDate", today);
     localStorage.setItem("lastCheckinDate", today);
     updateDisplay();
   }
 
   function triggerRelapse() {
-    if (confirm("Konfirmasi Relapse: Apakah Anda benar-benar ingin mereset progres?")) {
-      if (confirm("Peringatan Terakhir: Streak Anda akan kembali ke 0. Lanjutkan?")) {
-        localStorage.removeItem("startDate");
-        localStorage.removeItem("lastCheckinDate");
-        logUrge('muncul'); 
-        alert("Streak telah direset. Mari bangkit lagi!");
+    if (confirm("Reset streak?")) {
+      if (confirm("Lanjutkan?")) {
+        localStorage.removeItem("startDate"); localStorage.removeItem("lastCheckinDate");
         location.reload();
       }
     }
   }
 
-  // --- URGE TRACKER CORE ---
   let urges = JSON.parse(localStorage.getItem("urges")) || [];
-
   function logUrge(status) {
     const now = new Date();
-    // Format tanggal dan waktu sesuai request
-    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
     const entry = {
       status,
-      date: dateStr,
-      time: timeStr
+      date: now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
+      time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
     };
-    
-    urges.unshift(entry); 
-    if (urges.length > 50) urges.pop(); // Kapasitas history lebih besar
+    urges.unshift(entry);
+    if (urges.length > 50) urges.pop();
     localStorage.setItem("urges", JSON.stringify(urges));
     renderUrges();
   }
 
   function renderUrges() {
-    const container = document.getElementById("urgeLogList");
-    const fullListContainer = document.getElementById("fullHistoryList");
-    if(!container) return;
-
-    // Helper untuk membuat elemen log
-    const createLogHTML = u => `
-      <div class="log-item ${u.status}">
-        <span class="log-label">${u.status === 'muncul' ? '⚠️ Muncul' : '✅ Mereda'}</span>
-        <span class="log-time">${u.date}<br>${u.time}</span>
-      </div>`;
-
-    // Tampilan di Card Utama (hanya 3 terbaru agar tidak kepanjangan)
-    container.innerHTML = urges.length === 0 ? 
-      `<p style="text-align:center; color:var(--muted); font-size:12px; margin-top:10px;">Belum ada log aktivitas.</p>` : 
-      urges.slice(0, 3).map(createLogHTML).join('');
-    
-    // Tampilan di Modal Riwayat Lengkap
-    if(fullListContainer) {
-      fullListContainer.innerHTML = urges.map(createLogHTML).join('');
-    }
+    const list = document.getElementById("urgeLogList");
+    const fullList = document.getElementById("fullHistoryList");
+    const createHTML = u => `<div class="log-item ${u.status}"><span>${u.status === 'muncul' ? '⚠️ Muncul' : '✅ Mereda'}</span><span class="log-time">${u.date}<br>${u.time}</span></div>`;
+    if(list) list.innerHTML = urges.length === 0 ? `<p style="text-align:center; font-size:12px; color:var(--muted);">Belum ada riwayat.</p>` : urges.slice(0, 3).map(createHTML).join('');
+    if(fullList) fullList.innerHTML = urges.map(createHTML).join('');
   }
 
-  function showHistory() {
-    document.getElementById("historyModal").style.display = "block";
-    renderUrges();
-  }
-
-  function closeHistory() {
-    document.getElementById("historyModal").style.display = "none";
-  }
-
-  function clearUrgeHistory() {
-    if(confirm("Hapus semua riwayat tracker?")) {
-      urges = [];
-      localStorage.setItem("urges", JSON.stringify(urges));
-      renderUrges();
-    }
-  }
+  function showHistory() { document.getElementById("historyModal").style.display = "block"; }
+  function closeHistory() { document.getElementById("historyModal").style.display = "none"; }
+  function clearUrgeHistory() { if(confirm("Hapus?")) { urges = []; localStorage.setItem("urges", "[]"); renderUrges(); } }
 
   let panicTimer;
   function activatePanic() {
     document.getElementById("panicMode").style.display = "block";
-    let seconds = 30;
-    document.getElementById("breathCounter").innerText = seconds;
+    let s = 30;
+    document.getElementById("breathCounter").innerText = s;
     panicTimer = setInterval(() => {
-      seconds--;
-      document.getElementById("breathCounter").innerText = seconds;
-      if (seconds <= 0) {
-        clearInterval(panicTimer);
-        document.getElementById("panicText").innerText = "Tarik napas dalam, Anda kuat.";
-      }
+      s--; document.getElementById("breathCounter").innerText = s;
+      if (s <= 0) { clearInterval(panicTimer); document.getElementById("panicText").innerText = "Tarik napas dalam."; }
     }, 1000);
   }
-
-  function exitPanic() {
-    clearInterval(panicTimer);
-    document.getElementById("panicMode").style.display = "none";
-  }
-
-  function startReveal() {
-    const elements = document.querySelectorAll('.reveal');
-    elements.forEach(el => el.classList.add('active'));
-  }
+  function exitPanic() { clearInterval(panicTimer); document.getElementById("panicMode").style.display = "none"; }
 
   setTimeout(() => {
-    const intro = document.getElementById("intro");
-    intro.style.opacity = "0";
+    document.getElementById("intro").style.opacity = "0";
     setTimeout(() => {
-      intro.style.display = "none";
+      document.getElementById("intro").style.display = "none";
       document.getElementById("app").style.display = "block";
-      updateDisplay();
-      renderUrges();
-      window.requestAnimationFrame(startReveal);
+      updateDisplay(); renderUrges();
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
     }, 800);
   }, 1500);
 
   function exportData() {
-    const data = { 
-        startDate: localStorage.getItem("startDate"), 
-        lastCheckinDate: localStorage.getItem("lastCheckinDate"), 
-        urges 
-    };
+    const data = { sd: localStorage.getItem("startDate"), lc: localStorage.getItem("lastCheckinDate"), u: urges };
     const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `recovery-backup.json`;
-    a.click();
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click();
   }
-
   function importData() { document.getElementById("fileInput").click(); }
-
   document.getElementById("fileInput").addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
     const reader = new FileReader();
     reader.onload = function (e) {
       const data = JSON.parse(e.target.result);
-      if (data.startDate) localStorage.setItem("startDate", data.startDate);
-      if (data.lastCheckinDate) localStorage.setItem("lastCheckinDate", data.lastCheckinDate);
-      if (data.urges) localStorage.setItem("urges", JSON.stringify(data.urges));
-      alert("Data berhasil dipulihkan.");
+      if (data.sd) localStorage.setItem("startDate", data.sd);
+      if (data.lc) localStorage.setItem("lastCheckinDate", data.lc);
+      if (data.u) localStorage.setItem("urges", JSON.stringify(data.u));
       location.reload();
     };
-    reader.readAsText(file);
+    reader.readAsText(this.files[0]);
   });
 </script>
 
