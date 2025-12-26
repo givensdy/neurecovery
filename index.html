@@ -61,6 +61,7 @@
     .delay-2 { animation-delay: 0.2s; }
     .delay-3 { animation-delay: 0.3s; } 
     .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
 
     /* --- UI COMPONENTS --- */
     .card {
@@ -92,7 +93,7 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0;
     }
 
-    /* --- INTRO STYLE (RESTORED) --- */
+    /* --- INTRO STYLE --- */
     .intro {
       position: fixed; inset: 0; z-index: 9999; background: #0f172a;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -121,7 +122,6 @@
     .stat-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
 
     /* --- CALENDAR STYLE --- */
-    .calendar-container { margin-top: 10px; }
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
     .calendar-label { font-size: 10px; color: var(--muted); font-weight: 700; text-align: center; margin-bottom: 5px; }
     .cal-day { 
@@ -205,24 +205,29 @@
     <section id="home" class="page active">
       <div class="reveal delay-1" style="text-align: center; margin-bottom: 30px; margin-top: 10px;">
         <h1>NeuRecovery</h1>
-        <p style="color:var(--muted)">Satu keputusan pada satu waktu.</p>
+        <p style="color:var(--muted)">Small decision matter.</p>
       </div>
 
       <div class="card reveal delay-2" style="text-align: center;">
-        <h2>Waktu Pemulihan</h2>
+        <h2>Streak</h2>
         <div class="counter" id="dayCounter">0</div>
-        <p style="font-size: 14px; color: var(--muted)">HARI TANPA RELAPSE</p>
+        <p style="font-size: 14px; color: var(--muted)">Days without relapse</p>
       </div>
 
       <div class="card reveal delay-3">
         <h2>Check-in</h2>
-        <button onclick="checkIn()">Saya Tetap Sadar Hari Ini</button>
+        <button onclick="checkIn()">Commitment is kept.</button>
         <p id="checkinStatus" style="font-size: 13px; text-align: center; margin-top: 10px;"></p>
       </div>
 
       <div class="card reveal delay-4">
         <h2 style="color: var(--danger)">Relapse?</h2>
-        <button class="danger-outline" onclick="triggerRelapse()">Reset Streak Sekarang</button>
+        <button class="danger-outline" onclick="triggerRelapse()">Reset Streak</button>
+      </div>
+
+      <div class="card reveal delay-5" style="text-align: center;">
+        <h1 id="clockDisplay" style="font-size: 2.5rem; margin-bottom: 8px;">00:00:00</h1>
+        <p id="dateDisplay" style="color: var(--muted); font-size: 14px; font-weight: 500;"></p>
       </div>
     </section>
 
@@ -231,37 +236,37 @@
       <div class="card">
         <h2>Urge Tracker</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <button style="background: rgba(251, 113, 133, 0.15); color: var(--danger); border: 1px solid var(--danger);" onclick="logUrge('muncul')">Muncul</button>
-          <button style="background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid var(--success);" onclick="logUrge('mereda')">Mereda</button>
+          <button style="background: rgba(251, 113, 133, 0.15); color: var(--danger); border: 1px solid var(--danger);" onclick="logUrge('muncul')">Emerge</button>
+          <button style="background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid var(--success);" onclick="logUrge('mereda')">Recede</button>
         </div>
         <div id="urgeLogList" style="margin-top: 20px;"></div>
         <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
-          <button onclick="showHistory()" style="background: transparent; color: var(--muted); text-decoration: underline; width: auto; font-size: 12px; border:none; cursor:pointer;">Lihat Semua</button>
+          <button onclick="showHistory()" style="background: transparent; color: var(--muted); text-decoration: underline; width: auto; font-size: 12px; border:none; cursor:pointer;">Show All</button>
           <button onclick="clearUrgeHistory()" style="background: transparent; color: var(--danger); text-decoration: underline; width: auto; font-size: 12px; border:none; cursor:pointer;">Clear</button>
         </div>
       </div>
       
       <div class="card">
-        <h2>Statistik</h2>
+        <h2>Statistic</h2>
         <div class="stats-nav">
-            <button class="stats-btn active" onclick="switchStats('harian', this)">Harian</button>
-            <button class="stats-btn" onclick="switchStats('mingguan', this)">Mingguan</button>
-            <button class="stats-btn" onclick="switchStats('bulanan', this)">Bulanan</button>
+            <button class="stats-btn active" onclick="switchStats('harian', this)">Daily</button>
+            <button class="stats-btn" onclick="switchStats('mingguan', this)">Weekly</button>
+            <button class="stats-btn" onclick="switchStats('bulanan', this)">Monthly</button>
         </div>
         <div id="stats-harian" class="stats-content active">
-            <div class="stat-line"><span>Urge Muncul Hari Ini</span><span id="s-d-muncul">0</span></div>
-            <div class="stat-line"><span>Urge Mereda Hari Ini</span><span id="s-d-mereda">0</span></div>
+            <div class="stat-line"><span>Urge emerging today</span><span id="s-d-muncul">0</span></div>
+            <div class="stat-line"><span>Urge receding today</span><span id="s-d-mereda">0</span></div>
         </div>
         <div id="stats-mingguan" class="stats-content">
-            <div class="stat-line"><span>Total Urge (7 hari)</span><span id="s-w-total">0</span></div>
+            <div class="stat-line"><span>Total Urge (7 days)</span><span id="s-w-total">0</span></div>
         </div>
         <div id="stats-bulanan" class="stats-content">
-            <div class="stat-line"><span>Total Urge Bulan Ini</span><span id="s-m-total">0</span></div>
+            <div class="stat-line"><span>Total Urge This Month</span><span id="s-m-total">0</span></div>
         </div>
       </div>
 
       <div class="card">
-        <h2 id="calMonthName">Kalender Pemulihan</h2>
+        <h2 id="calMonthName">Recovery Calendar</h2>
         <div class="calendar-grid" id="mainCalendar"></div>
       </div>
     </section>
@@ -270,8 +275,8 @@
       <h1>Toolbox</h1>
       <div class="card" style="border: 2px solid var(--danger);">
         <h2 style="color: var(--danger)">SOS Mode</h2>
-        <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">Gunakan saat dorongan terasa sangat kuat.</p>
-        <button style="background: var(--danger); color: white;" onclick="activatePanic()">Aktifkan Bantuan</button>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">Use it when the urge is unbearable.</p>
+        <button style="background: var(--danger); color: white;" onclick="activatePanic()">Activate Help</button>
       </div>
 
       <div class="card" id="panicMode" style="display:none; background: rgba(0,0,0,0.4);">
@@ -295,13 +300,13 @@
     </section>
 
     <section id="profile" class="page">
-      <h1>Pengaturan & Profil</h1>
+      <h1>Settings & Profile</h1>
       <div class="theme-switcher">
         <button class="theme-btn active" id="btnDark" onclick="setTheme('dark')">Dark</button>
         <button class="theme-btn" id="btnUltra" onclick="setTheme('ultra')">Ultra Dark</button>
       </div>
       <div class="card">
-        <h2>Data Cadangan</h2>
+        <h2>Data Backup</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <button class="secondary" onclick="exportData()">Backup</button>
           <button class="secondary" onclick="importData()">Restore</button>
@@ -317,9 +322,32 @@
 </div>
 
 <script>
-  // --- DATABASE ---
   let urges = JSON.parse(localStorage.getItem("urges")) || [];
   let relapseHistory = JSON.parse(localStorage.getItem("relapseHistory")) || [];
+
+  // --- FUNGSI CLOCK (WIB/GMT+7) ---
+  function updateClock() {
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (7 * 3600000));
+    
+    const h = String(wibTime.getHours()).padStart(2, '0');
+    const m = String(wibTime.getMinutes()).padStart(2, '0');
+    const s = String(wibTime.getSeconds()).padStart(2, '0');
+    
+    const dd = String(wibTime.getDate()).padStart(2, '0');
+    const mm = String(wibTime.getMonth() + 1).padStart(2, '0');
+    const yy = String(wibTime.getFullYear()).slice(-2);
+
+    // Ganti ke Bahasa Inggris
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = days[wibTime.getDay()];
+
+    if(document.getElementById('clockDisplay')) {
+      document.getElementById('clockDisplay').innerText = `${h}:${m}:${s}`;
+      document.getElementById('dateDisplay').innerText = `${dayName}, ${dd}/${mm}/${yy}`;
+    }
+  }
+  setInterval(updateClock, 1000);
 
   function switchStats(type, btn) {
     document.querySelectorAll('.stats-btn').forEach(b => b.classList.remove('active'));
@@ -354,22 +382,20 @@
 
   function getTodayString() {
     const now = new Date();
-    return new Date(now.getTime() + (7 * 60 * 60 * 1000)).toISOString().split('T')[0];
+    const wib = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (7 * 3600000));
+    return wib.toISOString().split('T')[0];
   }
 
-  // --- STATISTIK DINAMIS ---
   function updateStatsUI() {
     const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     const dayMuncul = urges.filter(u => u.date === today && u.status === 'muncul').length;
     const dayMereda = urges.filter(u => u.date === today && u.status === 'mereda').length;
-
     document.getElementById('s-d-muncul').innerText = dayMuncul;
     document.getElementById('s-d-mereda').innerText = dayMereda;
-    document.getElementById('s-w-total').innerText = urges.length; // Simple total
+    document.getElementById('s-w-total').innerText = urges.length;
     document.getElementById('s-m-total').innerText = urges.length;
   }
 
-  // --- KALENDER SYSTEM ---
   function renderCalendar() {
     const grid = document.getElementById('mainCalendar');
     const name = document.getElementById('calMonthName');
@@ -377,28 +403,24 @@
     const month = now.getMonth();
     const year = now.getFullYear();
     
-    name.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-    grid.innerHTML = ['M', 'S', 'S', 'R', 'K', 'J', 'S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
-
+    // Bulan ke Bahasa Inggris
+    name.innerText = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
+    // Label hari ke Bahasa Inggris (S M T W T F S) dimulai dari Sunday
+    grid.innerHTML = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
+    
     const firstDay = new Date(year, month, 1).getDay();
     const totalDays = new Date(year, month + 1, 0).getDate();
     const startStr = localStorage.getItem("startDate");
     const startDate = startStr ? new Date(startStr) : null;
-
+    
     for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
-
     for (let d = 1; d <= totalDays; d++) {
       const dateObj = new Date(year, month, d);
       const dateISO = dateObj.toISOString().split('T')[0];
       let classes = "cal-day";
-      
-      if (startDate && dateObj >= new Date(startDate.setHours(0,0,0,0)) && dateObj <= now) {
-          classes += " cal-active";
-      }
-      if (relapseHistory.includes(dateISO)) {
-          classes = "cal-day cal-relapse";
-      }
-
+      if (startDate && dateObj >= new Date(new Date(startDate).setHours(0,0,0,0)) && dateObj <= now) classes += " cal-active";
+      if (relapseHistory.includes(dateISO)) classes = "cal-day cal-relapse";
       grid.innerHTML += `<div class="${classes}">${d}</div>`;
     }
   }
@@ -422,11 +444,11 @@
       }
 
       if (lastCheckinDate === today) {
-        if(checkinBtn) { checkinBtn.disabled = true; checkinBtn.style.opacity = "0.5"; checkinBtn.innerText = "Sudah Check-in"; }
-        if(statusText) { statusText.innerText = "✓ Komitmen terjaga."; statusText.style.color = "var(--success)"; }
+        if(checkinBtn) { checkinBtn.disabled = true; checkinBtn.style.opacity = "0.5"; checkinBtn.innerText = "Checked-in"; }
+        if(statusText) { statusText.innerText = "✓ Commitment is kept."; statusText.style.color = "var(--success)"; }
       } else {
-        if(checkinBtn) { checkinBtn.disabled = false; checkinBtn.style.opacity = "1"; checkinBtn.innerText = "Saya Tetap Sadar Hari Ini"; }
-        if(statusText) { statusText.innerText = "Ketuk untuk mencatat progres."; statusText.style.color = "var(--muted)"; }
+        if(checkinBtn) { checkinBtn.disabled = false; checkinBtn.style.opacity = "1"; checkinBtn.innerText = "Check-in"; }
+        if(statusText) { statusText.innerText = "Click to record progress."; statusText.style.color = "var(--muted)"; }
       }
     });
   }
@@ -440,7 +462,7 @@
 
   function triggerRelapse() {
     if (confirm("Reset streak?")) {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayString();
       relapseHistory.push(today);
       localStorage.setItem("relapseHistory", JSON.stringify(relapseHistory));
       localStorage.removeItem("startDate"); 
@@ -466,7 +488,7 @@
     const list = document.getElementById("urgeLogList");
     const fullList = document.getElementById("fullHistoryList");
     const createHTML = u => `<div class="log-item ${u.status}"><span>${u.status === 'muncul' ? '⚠️ Muncul' : '✅ Mereda'}</span><span class="log-time">${u.date}<br>${u.time}</span></div>`;
-    if(list) list.innerHTML = urges.length === 0 ? `<p style="text-align:center; font-size:12px; color:var(--muted);">Belum ada riwayat.</p>` : urges.slice(0, 3).map(createHTML).join('');
+    if(list) list.innerHTML = urges.length === 0 ? `<p style="text-align:center; font-size:12px; color:var(--muted);">No history recorded yet.</p>` : urges.slice(0, 3).map(createHTML).join('');
     if(fullList) fullList.innerHTML = urges.map(createHTML).join('');
   }
 
@@ -481,7 +503,7 @@
     document.getElementById("breathCounter").innerText = s;
     panicTimer = setInterval(() => {
       s--; document.getElementById("breathCounter").innerText = s;
-      if (s <= 0) { clearInterval(panicTimer); document.getElementById("panicText").innerText = "Tarik napas dalam."; }
+      if (s <= 0) { clearInterval(panicTimer); document.getElementById("panicText").innerText = "Take deep breaths."; }
     }, 1000);
   }
   function exitPanic() { clearInterval(panicTimer); document.getElementById("panicMode").style.display = "none"; }
@@ -491,7 +513,7 @@
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
       document.getElementById("app").style.display = "block";
-      updateDisplay(); renderUrges(); updateStatsUI(); renderCalendar();
+      updateDisplay(); renderUrges(); updateStatsUI(); renderCalendar(); updateClock();
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
     }, 800);
   }, 1500);
