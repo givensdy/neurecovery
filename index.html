@@ -117,6 +117,19 @@
     .stats-btn.active { background: var(--card); color: var(--accent); border: 1px solid var(--glass-border); }
     .stats-content { display: none; padding: 10px 0; animation: fadeIn 0.3s ease; }
     .stats-content.active { display: block; }
+    
+    .stat-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+
+    /* --- CALENDAR STYLE --- */
+    .calendar-container { margin-top: 10px; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
+    .calendar-label { font-size: 10px; color: var(--muted); font-weight: 700; text-align: center; margin-bottom: 5px; }
+    .cal-day { 
+      aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; 
+      font-size: 12px; border-radius: 50%; transition: 0.3s; 
+    }
+    .cal-active { border: 1.5px solid var(--accent); color: var(--accent); font-weight: 700; }
+    .cal-relapse { border: 1.5px solid var(--danger); color: var(--danger); font-weight: 700; }
 
     /* --- BOTTOM NAVIGATION --- */
     .bottom-nav {
@@ -236,14 +249,20 @@
             <button class="stats-btn" onclick="switchStats('bulanan', this)">Bulanan</button>
         </div>
         <div id="stats-harian" class="stats-content active">
-            <p style="font-size: 13px; color: var(--muted);">Data harian terpantau stabil.</p>
+            <div class="stat-line"><span>Urge Muncul Hari Ini</span><span id="s-d-muncul">0</span></div>
+            <div class="stat-line"><span>Urge Mereda Hari Ini</span><span id="s-d-mereda">0</span></div>
         </div>
         <div id="stats-mingguan" class="stats-content">
-            <p style="font-size: 13px; color: var(--muted);">Ringkasan 7 hari terakhir menunjukkan progres positif.</p>
+            <div class="stat-line"><span>Total Urge (7 hari)</span><span id="s-w-total">0</span></div>
         </div>
         <div id="stats-bulanan" class="stats-content">
-            <p style="font-size: 13px; color: var(--muted);">Visualisasi data bulanan di sini.</p>
+            <div class="stat-line"><span>Total Urge Bulan Ini</span><span id="s-m-total">0</span></div>
         </div>
+      </div>
+
+      <div class="card">
+        <h2 id="calMonthName">Kalender Pemulihan</h2>
+        <div class="calendar-grid" id="mainCalendar"></div>
       </div>
     </section>
 
@@ -298,6 +317,10 @@
 </div>
 
 <script>
+  // --- DATABASE ---
+  let urges = JSON.parse(localStorage.getItem("urges")) || [];
+  let relapseHistory = JSON.parse(localStorage.getItem("relapseHistory")) || [];
+
   function switchStats(type, btn) {
     document.querySelectorAll('.stats-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -310,6 +333,7 @@
     navEl.classList.add('active');
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+    if(pageId === 'insights') { updateStatsUI(); renderCalendar(); }
     window.scrollTo(0, 0);
   }
 
@@ -331,6 +355,52 @@
   function getTodayString() {
     const now = new Date();
     return new Date(now.getTime() + (7 * 60 * 60 * 1000)).toISOString().split('T')[0];
+  }
+
+  // --- STATISTIK DINAMIS ---
+  function updateStatsUI() {
+    const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    const dayMuncul = urges.filter(u => u.date === today && u.status === 'muncul').length;
+    const dayMereda = urges.filter(u => u.date === today && u.status === 'mereda').length;
+
+    document.getElementById('s-d-muncul').innerText = dayMuncul;
+    document.getElementById('s-d-mereda').innerText = dayMereda;
+    document.getElementById('s-w-total').innerText = urges.length; // Simple total
+    document.getElementById('s-m-total').innerText = urges.length;
+  }
+
+  // --- KALENDER SYSTEM ---
+  function renderCalendar() {
+    const grid = document.getElementById('mainCalendar');
+    const name = document.getElementById('calMonthName');
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    
+    name.innerText = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    grid.innerHTML = ['M', 'S', 'S', 'R', 'K', 'J', 'S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const startStr = localStorage.getItem("startDate");
+    const startDate = startStr ? new Date(startStr) : null;
+
+    for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
+
+    for (let d = 1; d <= totalDays; d++) {
+      const dateObj = new Date(year, month, d);
+      const dateISO = dateObj.toISOString().split('T')[0];
+      let classes = "cal-day";
+      
+      if (startDate && dateObj >= new Date(startDate.setHours(0,0,0,0)) && dateObj <= now) {
+          classes += " cal-active";
+      }
+      if (relapseHistory.includes(dateISO)) {
+          classes = "cal-day cal-relapse";
+      }
+
+      grid.innerHTML += `<div class="${classes}">${d}</div>`;
+    }
   }
 
   function updateDisplay() {
@@ -370,14 +440,15 @@
 
   function triggerRelapse() {
     if (confirm("Reset streak?")) {
-      if (confirm("Lanjutkan?")) {
-        localStorage.removeItem("startDate"); localStorage.removeItem("lastCheckinDate");
-        location.reload();
-      }
+      const today = new Date().toISOString().split('T')[0];
+      relapseHistory.push(today);
+      localStorage.setItem("relapseHistory", JSON.stringify(relapseHistory));
+      localStorage.removeItem("startDate"); 
+      localStorage.removeItem("lastCheckinDate");
+      location.reload();
     }
   }
 
-  let urges = JSON.parse(localStorage.getItem("urges")) || [];
   function logUrge(status) {
     const now = new Date();
     const entry = {
@@ -401,7 +472,7 @@
 
   function showHistory() { document.getElementById("historyModal").style.display = "block"; }
   function closeHistory() { document.getElementById("historyModal").style.display = "none"; }
-  function clearUrgeHistory() { if(confirm("Hapus?")) { urges = []; localStorage.setItem("urges", "[]"); renderUrges(); } }
+  function clearUrgeHistory() { if(confirm("Hapus?")) { urges = []; localStorage.setItem("urges", "[]"); renderUrges(); updateStatsUI(); } }
 
   let panicTimer;
   function activatePanic() {
@@ -420,13 +491,13 @@
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
       document.getElementById("app").style.display = "block";
-      updateDisplay(); renderUrges();
+      updateDisplay(); renderUrges(); updateStatsUI(); renderCalendar();
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
     }, 800);
   }, 1500);
 
   function exportData() {
-    const data = { sd: localStorage.getItem("startDate"), lc: localStorage.getItem("lastCheckinDate"), u: urges };
+    const data = { sd: localStorage.getItem("startDate"), lc: localStorage.getItem("lastCheckinDate"), u: urges, rh: relapseHistory };
     const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click();
   }
@@ -438,6 +509,7 @@
       if (data.sd) localStorage.setItem("startDate", data.sd);
       if (data.lc) localStorage.setItem("lastCheckinDate", data.lc);
       if (data.u) localStorage.setItem("urges", JSON.stringify(data.u));
+      if (data.rh) localStorage.setItem("relapseHistory", JSON.stringify(data.rh));
       location.reload();
     };
     reader.readAsText(this.files[0]);
