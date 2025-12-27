@@ -456,27 +456,37 @@
   };
 
   // --- UI RENDERING ---
-  function updateDisplay() {
-    const today = getTodayString();
-    const counter = document.getElementById('dayCounter');
-    const btn = document.getElementById('btnCheckin');
-    const status = document.getElementById('checkinStatus');
+function updateDisplay() {
+    const today = getTodayString();
+    const counter = document.getElementById('dayCounter');
+    const btn = document.getElementById('btnCheckin');
+    const status = document.getElementById('checkinStatus');
 
-    if (!userData.startDate) counter.innerText = "0";
-    else {
-      const start = new Date(userData.startDate);
-      const diff = Math.round((new Date().setHours(0,0,0,0) - start.setHours(0,0,0,0)) / 86400000);
-      counter.innerText = (userData.lastCheckinDate === today) ? diff + 1 : diff;
-    }
-
-    if (userData.lastCheckinDate === today) {
-      btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Checked-in";
-      status.innerText = "✓ Commitment kept."; status.style.color = "var(--success)";
+    if (!userData.startDate) {
+      counter.innerText = "0";
     } else {
-      btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Check-in";
-      status.innerText = "Click to record progress."; status.style.color = "var(--muted)";
-    }
-  }
+      // LOGIKA BARU: Cek apakah ada relapse setelah startDate
+      const hasRelapseAfterStart = userData.relapseHistory.some(date => date > userData.startDate);
+      
+      if (hasRelapseAfterStart) {
+        // Jika ada relapse yang lebih baru dari tanggal mulai, streak wajib 0
+        counter.innerText = "0";
+      } else {
+        // Jika tidak ada relapse setelahnya, hitung streak normal
+        const start = new Date(userData.startDate);
+        const diff = Math.round((new Date().setHours(0,0,0,0) - start.setHours(0,0,0,0)) / 86400000);
+        counter.innerText = (userData.lastCheckinDate === today) ? diff + 1 : diff;
+      }
+    }
+
+    if (userData.lastCheckinDate === today) {
+      btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Checked-in";
+      status.innerText = "✓ Commitment kept."; status.style.color = "var(--success)";
+    } else {
+      btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Check-in";
+      status.innerText = "Click to record progress."; status.style.color = "var(--muted)";
+    }
+  }
 
   function renderUrges() {
     const list = document.getElementById("urgeLogList");
