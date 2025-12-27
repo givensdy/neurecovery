@@ -450,7 +450,7 @@
     document.getElementById('s-m-total').innerText = userData.urges.length;
   };
 
- window.renderCalendar = () => {
+window.renderCalendar = () => {
     const grid = document.getElementById('mainCalendar');
     const now = new Date();
     document.getElementById('calMonthName').innerText = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -462,20 +462,24 @@
     
     for (let i = 0; i < first; i++) grid.innerHTML += `<div></div>`;
     
+    // Ambil string hari ini (YYYY-MM-DD)
+    const todayStr = getTodayString();
+    
     for (let d = 1; d <= total; d++) {
-      // Buat string tanggal lokal (YYYY-MM-DD)
-      const dateObj = new Date(now.getFullYear(), now.getMonth(), d);
-      const dateISO = dateObj.toLocaleDateString('en-CA'); // Format YYYY-MM-DD yang stabil
+      // Manual merakit string YYYY-MM-DD supaya konsisten di semua HP
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(d).padStart(2, '0');
+      const dateISO = `${y}-${m}-${day}`;
       
       let cls = "cal-day";
       
-      // LOGIKA BARU:
-      // 1. Cek apakah tanggal ini ada di riwayat relapse (MERAH)
+      // 1. Prioritas MERAH jika ada di riwayat relapse
       if (userData.relapseHistory && userData.relapseHistory.includes(dateISO)) {
         cls = "cal-day cal-relapse";
       } 
-      // 2. Jika tidak relapse, cek apakah sudah masuk masa recovery (BIRU)
-      else if (userData.startDate && dateISO >= userData.startDate && dateISO <= getTodayString()) {
+      // 2. Jika tidak relapse, cek apakah dalam rentang aktif (BIRU)
+      else if (userData.startDate && dateISO >= userData.startDate && dateISO <= todayStr) {
         cls += " cal-active";
       }
       
@@ -547,4 +551,5 @@
 
 </body>
 </html>
+
 
