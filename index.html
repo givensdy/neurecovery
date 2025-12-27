@@ -450,19 +450,35 @@
     document.getElementById('s-m-total').innerText = userData.urges.length;
   };
 
-  window.renderCalendar = () => {
+ window.renderCalendar = () => {
     const grid = document.getElementById('mainCalendar');
     const now = new Date();
     document.getElementById('calMonthName').innerText = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
     grid.innerHTML = ['S','M','T','W','T','F','S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
+    
     const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
     const total = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    
     for (let i = 0; i < first; i++) grid.innerHTML += `<div></div>`;
+    
     for (let d = 1; d <= total; d++) {
-      const dateISO = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      // Buat string tanggal lokal (YYYY-MM-DD)
+      const dateObj = new Date(now.getFullYear(), now.getMonth(), d);
+      const dateISO = dateObj.toLocaleDateString('en-CA'); // Format YYYY-MM-DD yang stabil
+      
       let cls = "cal-day";
-      if (userData.startDate && dateISO >= userData.startDate) cls += " cal-active";
-      if (userData.relapseHistory.includes(dateISO)) cls = "cal-day cal-relapse";
+      
+      // LOGIKA BARU:
+      // 1. Cek apakah tanggal ini ada di riwayat relapse (MERAH)
+      if (userData.relapseHistory && userData.relapseHistory.includes(dateISO)) {
+        cls = "cal-day cal-relapse";
+      } 
+      // 2. Jika tidak relapse, cek apakah sudah masuk masa recovery (BIRU)
+      else if (userData.startDate && dateISO >= userData.startDate && dateISO <= getTodayString()) {
+        cls += " cal-active";
+      }
+      
       grid.innerHTML += `<div class="${cls}">${d}</div>`;
     }
   };
@@ -531,3 +547,4 @@
 
 </body>
 </html>
+
