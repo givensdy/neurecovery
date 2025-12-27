@@ -56,6 +56,7 @@
       -webkit-backdrop-filter: blur(12px) saturate(180%);
       border: 1px solid var(--glass-border); border-radius: 24px;
       padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      position: relative;
     }
 
     h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
@@ -89,6 +90,34 @@
     .stats-content { display: none; padding: 10px 0; animation: fadeIn 0.3s ease; }
     .stats-content.active { display: block; }
     .stat-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+
+    /* Calendar Header Styles */
+ .cal-header-flex { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 20px; 
+}
+.cal-nav-group { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+.cal-nav-group button { 
+  width: 34px; 
+  height: 34px; 
+  padding: 0; 
+  border-radius: 10px; 
+  font-size: 14px; 
+  background: rgba(255,255,255,0.08); 
+  color: var(--text); 
+  border: 1px solid var(--glass-border); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.btn-edit-cal { color: var(--muted) !important; }
 
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
     .calendar-label { font-size: 10px; color: var(--muted); font-weight: 700; text-align: center; margin-bottom: 5px; }
@@ -220,10 +249,22 @@
         </div>
       </div>
 
-      <div class="card">
-        <h2 id="calMonthName">Calendar</h2>
-        <div class="calendar-grid" id="mainCalendar"></div>
-      </div>
+<div class="card">
+  <div class="cal-header-flex">
+    <h2 id="calMonthName" style="margin-bottom:0">Calendar</h2>
+    <div class="cal-nav-group">
+      <button onclick="changeMonth(-1)">&lt;</button>
+      <button onclick="changeMonth(1)">&gt;</button>
+      <button class="btn-edit-cal" onclick="editStartDate()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="calendar-grid" id="mainCalendar"></div>
+</div>
     </section>
 
     <section id="toolbox" class="page">
@@ -312,6 +353,8 @@
     relapseHistory: JSON.parse(localStorage.getItem("relapseHistory")) || []
   };
 
+  let currentCalView = new Date(); // To track calendar view
+
   // --- AUTH LOGIC ---
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -387,7 +430,8 @@
 
   window.triggerRelapse = async () => {
     if (confirm("Reset streak?")) {
-      userData.relapseHistory.push(getTodayString());
+      const today = getTodayString();
+      if(!userData.relapseHistory.includes(today)) userData.relapseHistory.push(today);
       userData.startDate = null;
       userData.lastCheckinDate = null;
       saveLocal();
@@ -450,40 +494,56 @@
     document.getElementById('s-m-total').innerText = userData.urges.length;
   };
 
-window.renderCalendar = () => {
+  window.renderCalendar = () => {
     const grid = document.getElementById('mainCalendar');
-    const now = new Date();
-    document.getElementById('calMonthName').innerText = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const viewDate = currentCalView;
+    document.getElementById('calMonthName').innerText = viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     
     grid.innerHTML = ['S','M','T','W','T','F','S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
     
-    const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-    const total = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const firstDayIndex = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
+    const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
     
-    for (let i = 0; i < first; i++) grid.innerHTML += `<div></div>`;
+    for (let i = 0; i < firstDayIndex; i++) grid.innerHTML += `<div></div>`;
     
-    // Ambil string hari ini (YYYY-MM-DD)
     const todayStr = getTodayString();
     
-    for (let d = 1; d <= total; d++) {
-      // Manual merakit string YYYY-MM-DD supaya konsisten di semua HP
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
+    for (let d = 1; d <= daysInMonth; d++) {
+      const y = viewDate.getFullYear();
+      const m = String(viewDate.getMonth() + 1).padStart(2, '0');
       const day = String(d).padStart(2, '0');
       const dateISO = `${y}-${m}-${day}`;
       
       let cls = "cal-day";
       
-      // 1. Prioritas MERAH jika ada di riwayat relapse
       if (userData.relapseHistory && userData.relapseHistory.includes(dateISO)) {
         cls = "cal-day cal-relapse";
       } 
-      // 2. Jika tidak relapse, cek apakah dalam rentang aktif (BIRU)
       else if (userData.startDate && dateISO >= userData.startDate && dateISO <= todayStr) {
         cls += " cal-active";
       }
       
       grid.innerHTML += `<div class="${cls}">${d}</div>`;
+    }
+  };
+
+  // --- NEW FEATURES: CAL NAV & EDIT ---
+  window.changeMonth = (dir) => {
+    currentCalView.setMonth(currentCalView.getMonth() + dir);
+    renderCalendar();
+  };
+
+  window.editStartDate = async () => {
+    const newDate = prompt("Enter Start Date (YYYY-MM-DD):", userData.startDate || "2025-12-25");
+    if (newDate && /^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+      userData.startDate = newDate;
+      saveLocal();
+      await syncToCloud();
+      updateDisplay();
+      renderCalendar();
+      alert("Streak adjusted to " + newDate);
+    } else if (newDate) {
+      alert("Invalid format. Use YYYY-MM-DD");
     }
   };
 
@@ -551,5 +611,3 @@ window.renderCalendar = () => {
 
 </body>
 </html>
-
-
