@@ -29,50 +29,33 @@
       --accent: #818cf8;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin: 0;
-      background: var(--gradient-bg);
-      background-attachment: fixed;
-      color: var(--text);
-      min-height: 100vh;
-      padding: 20px 16px 120px 16px;
-      transition: background 0.4s ease;
-      overflow-x: hidden;
-      text-rendering: optimizeLegibility;
+      margin: 0; background: var(--gradient-bg); background-attachment: fixed;
+      color: var(--text); min-height: 100vh; padding: 20px 16px 120px 16px;
+      transition: background 0.4s ease; overflow-x: hidden; text-rendering: optimizeLegibility;
     }
 
     .container { max-width: 450px; margin: auto; }
 
     /* --- ANIMATION --- */
     @keyframes revealCard {
-      0% { opacity: 0; transform: translateY(20px) translateZ(0); }
-      100% { opacity: 1; transform: translateY(0) translateZ(0); }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     .reveal { opacity: 0; will-change: transform, opacity; }
     .reveal.active { animation: revealCard 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-    
-    .delay-1 { animation-delay: 0.1s; } 
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; } 
-    .delay-4 { animation-delay: 0.4s; }
+    .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
     .delay-5 { animation-delay: 0.5s; }
 
     /* --- UI COMPONENTS --- */
     .card {
-      background: var(--card);
-      backdrop-filter: blur(12px) saturate(180%);
+      background: var(--card); backdrop-filter: blur(12px) saturate(180%);
       -webkit-backdrop-filter: blur(12px) saturate(180%);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border); border-radius: 24px;
+      padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     }
 
     h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
@@ -93,69 +76,42 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0;
     }
 
-    /* --- INTRO STYLE --- */
     .intro {
       position: fixed; inset: 0; z-index: 9999; background: #0f172a;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      transition: opacity 0.8s ease;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease;
     }
-    .intro h1 { 
-      font-size: 2.5rem; 
-      background: linear-gradient(to bottom, #fff, #64748b); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-    }
+    .intro h1 { font-size: 2.5rem; background: linear-gradient(to bottom, #fff, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* --- STATS TOGGLE --- */
-    .stats-nav {
-      display: flex; gap: 8px; margin-bottom: 20px; background: rgba(0,0,0,0.2); 
-      padding: 4px; border-radius: 12px;
-    }
-    .stats-btn {
-      flex: 1; padding: 10px; font-size: 11px; border-radius: 8px; border: none; 
-      background: transparent; color: var(--muted); cursor: pointer; font-weight: 600;
-    }
+    /* --- STATS & CALENDAR --- */
+    .stats-nav { display: flex; gap: 8px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px; }
+    .stats-btn { flex: 1; padding: 10px; font-size: 11px; border-radius: 8px; border: none; background: transparent; color: var(--muted); cursor: pointer; font-weight: 600; }
     .stats-btn.active { background: var(--card); color: var(--accent); border: 1px solid var(--glass-border); }
     .stats-content { display: none; padding: 10px 0; animation: fadeIn 0.3s ease; }
     .stats-content.active { display: block; }
-    
     .stat-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
 
-    /* --- CALENDAR STYLE --- */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
     .calendar-label { font-size: 10px; color: var(--muted); font-weight: 700; text-align: center; margin-bottom: 5px; }
-    .cal-day { 
-      aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; 
-      font-size: 12px; border-radius: 50%; transition: 0.3s; 
-    }
+    .cal-day { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 12px; border-radius: 50%; transition: 0.3s; }
     .cal-active { border: 1.5px solid var(--accent); color: var(--accent); font-weight: 700; }
     .cal-relapse { border: 1.5px solid var(--danger); color: var(--danger); font-weight: 700; }
 
-    /* --- BOTTOM NAVIGATION --- */
     .bottom-nav {
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      width: calc(100% - 32px); max-width: 400px;
-      background: rgba(15, 23, 42, 0.8);
+      width: calc(100% - 32px); max-width: 400px; background: rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 28px;
-      display: flex; justify-content: space-around; align-items: center;
-      padding: 12px 10px; z-index: 2000;
+      border: 1px solid var(--glass-border); border-radius: 28px;
+      display: flex; justify-content: space-around; align-items: center; padding: 12px 10px; z-index: 2000;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center;
-      color: var(--muted); cursor: pointer; transition: 0.3s; flex: 1;
-    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); cursor: pointer; transition: 0.3s; flex: 1; }
     .nav-item.active { color: var(--accent); }
     .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
 
-    /* --- PAGE SYSTEM --- */
     .page { display: none; animation: fadeIn 0.4s ease; }
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* --- LOGS --- */
     .log-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 14px; background: rgba(255,255,255,0.03); border-left: 4px solid var(--muted); margin-bottom: 8px; font-size: 13px; }
     .log-item.muncul { border-left-color: var(--danger); }
     .log-item.mereda { border-left-color: var(--success); }
@@ -166,7 +122,6 @@
     .theme-btn.active { background: var(--card); color: var(--accent); }
   </style>
 </head>
-
 <body>
 
 <div id="intro" class="intro">
@@ -203,29 +158,29 @@
   <div class="container">
 
     <section id="home" class="page active">
-      <div class="reveal delay-1" style="text-align: center; margin-bottom: 30px; margin-top: 10px;">
+      <div class="reveal active delay-1" style="text-align: center; margin-bottom: 30px; margin-top: 10px;">
         <h1>NeuRecovery</h1>
-        <p style="color:var(--muted)">Small decision matter.</p>
+        <p id="userGreeting" style="color:var(--muted)">Small decision matter.</p>
       </div>
 
-      <div class="card reveal delay-2" style="text-align: center;">
+      <div class="card reveal active delay-2" style="text-align: center;">
         <h2>Streak</h2>
         <div class="counter" id="dayCounter">0</div>
         <p style="font-size: 14px; color: var(--muted)">Days without relapse</p>
       </div>
 
-      <div class="card reveal delay-3">
+      <div class="card reveal active delay-3">
         <h2>Check-in</h2>
-        <button onclick="checkIn()">Commitment is kept.</button>
+        <button id="btnCheckin" onclick="checkIn()">Check-in</button>
         <p id="checkinStatus" style="font-size: 13px; text-align: center; margin-top: 10px;"></p>
       </div>
 
-      <div class="card reveal delay-4">
+      <div class="card reveal active delay-4">
         <h2 style="color: var(--danger)">Relapse?</h2>
         <button class="danger-outline" onclick="triggerRelapse()">Reset Streak</button>
       </div>
 
-      <div class="card reveal delay-5" style="text-align: center;">
+      <div class="card reveal active delay-5" style="text-align: center;">
         <h1 id="clockDisplay" style="font-size: 2.5rem; margin-bottom: 8px;">00:00:00</h1>
         <p id="dateDisplay" style="color: var(--muted); font-size: 14px; font-weight: 500;"></p>
       </div>
@@ -266,7 +221,7 @@
       </div>
 
       <div class="card">
-        <h2 id="calMonthName">Recovery Calendar</h2>
+        <h2 id="calMonthName">Calendar</h2>
         <div class="calendar-grid" id="mainCalendar"></div>
       </div>
     </section>
@@ -287,255 +242,291 @@
       </div>
 
       <div class="card">
-        <h2>Relaksasi Cepat</h2>
-        <p style="font-size: 14px; margin-bottom: 10px;">Teknik 5-4-3-2-1 Grounding:</p>
+        <h2>Dr. Tirta Method</h2>
         <ul style="font-size: 12px; color: var(--muted); padding-left: 20px;">
-          <li>Sebutkan 5 benda yang Anda lihat.</li>
-          <li>4 benda yang bisa disentuh.</li>
-          <li>3 suara yang didengar.</li>
-          <li>2 bau yang tercium.</li>
-          <li>1 hal yang bisa dirasakan lidah.</li>
+          <li>5 things you see.</li><li>4 things you can touch.</li><li>3 sounds you hear.</li><li>2 smells you can perceive.</li><li>1 taste you can feel.</li>
         </ul>
       </div>
     </section>
 
     <section id="profile" class="page">
       <h1>Settings & Profile</h1>
+      
+      <div id="loginCard" class="card">
+        <h2>Cloud Sync</h2>
+        <button id="btnLogin" style="background:white; color:black; display:flex; align-items:center; justify-content:center; gap:10px;">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Login with Google
+        </button>
+      </div>
+      <div id="userCard" class="card" style="display:none; text-align:center;">
+        <img id="userPhoto" src="" style="width:50px; border-radius:50%; margin-bottom:10px;">
+        <h2 id="userName">User</h2>
+        <button class="secondary" id="btnLogout" style="padding:8px; font-size:12px;">Sign Out</button>
+      </div>
+
       <div class="theme-switcher">
         <button class="theme-btn active" id="btnDark" onclick="setTheme('dark')">Dark</button>
         <button class="theme-btn" id="btnUltra" onclick="setTheme('ultra')">Ultra Dark</button>
       </div>
+
       <div class="card">
-        <h2>Data Backup</h2>
+        <h2>Data Management</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <button class="secondary" onclick="exportData()">Backup</button>
           <button class="secondary" onclick="importData()">Restore</button>
         </div>
         <input type="file" id="fileInput" style="display:none;" />
       </div>
-      <div class="card" style="text-align: center;">
-        <p style="font-size: 12px; color: var(--muted);">NeuRecovery v2.0<br>Data is stored locally.</p>
-      </div>
     </section>
 
   </div>
 </div>
 
-<script>
-  let urges = JSON.parse(localStorage.getItem("urges")) || [];
-  let relapseHistory = JSON.parse(localStorage.getItem("relapseHistory")) || [];
+<script type="module">
+  // --- FIREBASE SDK ---
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // --- FUNGSI CLOCK (WIB/GMT+7) ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyDzI8YTl2AXPbaVZ8xR0ZfTzYqMhgJx1E0",
+    authDomain: "neurecovery.firebaseapp.com",
+    projectId: "neurecovery",
+    storageBucket: "neurecovery.firebasestorage.app",
+    messagingSenderId: "484147062782",
+    appId: "1:484147062782:web:52210c407da5226d6d82af",
+    measurementId: "G-DYQNVYWKYZ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // --- APP STATE ---
+  let currentUser = null;
+  let userData = {
+    startDate: localStorage.getItem("startDate") || null,
+    lastCheckinDate: localStorage.getItem("lastCheckinDate") || null,
+    urges: JSON.parse(localStorage.getItem("urges")) || [],
+    relapseHistory: JSON.parse(localStorage.getItem("relapseHistory")) || []
+  };
+
+  // --- AUTH LOGIC ---
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      document.getElementById('loginCard').style.display = 'none';
+      document.getElementById('userCard').style.display = 'block';
+      document.getElementById('userName').innerText = user.displayName;
+      document.getElementById('userPhoto').src = user.photoURL;
+      document.getElementById('userGreeting').innerText = `Mind over matter, ${user.displayName.split(' ')[0]}!`;
+
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if (docSnap.exists()) {
+        userData = docSnap.data();
+        saveLocal();
+      } else {
+        await syncToCloud();
+      }
+    } else {
+      currentUser = null;
+      document.getElementById('loginCard').style.display = 'block';
+      document.getElementById('userCard').style.display = 'none';
+      document.getElementById('userGreeting').innerText = "Small decisions matter.";
+    }
+    updateDisplay(); renderUrges(); renderCalendar(); updateStatsUI();
+  });
+
+  window.loginGoogle = () => signInWithPopup(auth, provider);
+  document.getElementById('btnLogin').onclick = window.loginGoogle;
+  document.getElementById('btnLogout').onclick = () => auth.signOut();
+
+  async function syncToCloud() {
+    if (currentUser) await setDoc(doc(db, "users", currentUser.uid), userData);
+  }
+
+  function saveLocal() {
+    localStorage.setItem("startDate", userData.startDate || "");
+    localStorage.setItem("lastCheckinDate", userData.lastCheckinDate || "");
+    localStorage.setItem("urges", JSON.stringify(userData.urges));
+    localStorage.setItem("relapseHistory", JSON.stringify(userData.relapseHistory));
+  }
+
+  // --- CLOCK ---
   function updateClock() {
     const now = new Date();
     const wibTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (7 * 3600000));
-    
     const h = String(wibTime.getHours()).padStart(2, '0');
     const m = String(wibTime.getMinutes()).padStart(2, '0');
     const s = String(wibTime.getSeconds()).padStart(2, '0');
-    
     const dd = String(wibTime.getDate()).padStart(2, '0');
     const mm = String(wibTime.getMonth() + 1).padStart(2, '0');
     const yy = String(wibTime.getFullYear()).slice(-2);
-
-    // Ganti ke Bahasa Inggris
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayName = days[wibTime.getDay()];
-
-    if(document.getElementById('clockDisplay')) {
-      document.getElementById('clockDisplay').innerText = `${h}:${m}:${s}`;
-      document.getElementById('dateDisplay').innerText = `${dayName}, ${dd}/${mm}/${yy}`;
-    }
+    document.getElementById('clockDisplay').innerText = `${h}:${m}:${s}`;
+    document.getElementById('dateDisplay').innerText = `${days[wibTime.getDay()]}, ${dd}/${mm}/${yy}`;
   }
   setInterval(updateClock, 1000);
 
-  function switchStats(type, btn) {
-    document.querySelectorAll('.stats-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.stats-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('stats-' + type).classList.add('active');
-  }
-
-  function switchPage(pageId, navEl) {
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    navEl.classList.add('active');
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    if(pageId === 'insights') { updateStatsUI(); renderCalendar(); }
-    window.scrollTo(0, 0);
-  }
-
-  function setTheme(mode) {
-    const body = document.body;
-    const btnDark = document.getElementById('btnDark');
-    const btnUltra = document.getElementById('btnUltra');
-    if(mode === 'ultra') {
-      body.classList.add('ultra'); btnUltra.classList.add('active'); btnDark.classList.remove('active');
-    } else {
-      body.classList.remove('ultra'); btnDark.classList.add('active'); btnUltra.classList.remove('active');
-    }
-    localStorage.setItem('theme', mode);
-  }
-  
-  const savedTheme = localStorage.getItem('theme');
-  if(savedTheme) setTheme(savedTheme);
-
+  // --- CORE LOGIC ---
   function getTodayString() {
     const now = new Date();
     const wib = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (7 * 3600000));
     return wib.toISOString().split('T')[0];
   }
 
-  function updateStatsUI() {
-    const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-    const dayMuncul = urges.filter(u => u.date === today && u.status === 'muncul').length;
-    const dayMereda = urges.filter(u => u.date === today && u.status === 'mereda').length;
-    document.getElementById('s-d-muncul').innerText = dayMuncul;
-    document.getElementById('s-d-mereda').innerText = dayMereda;
-    document.getElementById('s-w-total').innerText = urges.length;
-    document.getElementById('s-m-total').innerText = urges.length;
-  }
-
-  function renderCalendar() {
-    const grid = document.getElementById('mainCalendar');
-    const name = document.getElementById('calMonthName');
-    const now = new Date();
-    const month = now.getMonth();
-    const year = now.getFullYear();
-    
-    // Bulan ke Bahasa Inggris
-    name.innerText = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    
-    // Label hari ke Bahasa Inggris (S M T W T F S) dimulai dari Sunday
-    grid.innerHTML = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
-    
-    const firstDay = new Date(year, month, 1).getDay();
-    const totalDays = new Date(year, month + 1, 0).getDate();
-    const startStr = localStorage.getItem("startDate");
-    const startDate = startStr ? new Date(startStr) : null;
-    
-    for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
-    for (let d = 1; d <= totalDays; d++) {
-      const dateObj = new Date(year, month, d);
-      const dateISO = dateObj.toISOString().split('T')[0];
-      let classes = "cal-day";
-      if (startDate && dateObj >= new Date(new Date(startDate).setHours(0,0,0,0)) && dateObj <= now) classes += " cal-active";
-      if (relapseHistory.includes(dateISO)) classes = "cal-day cal-relapse";
-      grid.innerHTML += `<div class="${classes}">${d}</div>`;
-    }
-  }
-
-  function updateDisplay() {
-    window.requestAnimationFrame(() => {
-      const today = getTodayString();
-      const checkinBtn = document.querySelector("button[onclick='checkIn()']");
-      const statusText = document.getElementById("checkinStatus");
-      const dayCounterElement = document.getElementById("dayCounter");
-      let startDate = localStorage.getItem("startDate");
-      let lastCheckinDate = localStorage.getItem("lastCheckinDate");
-
-      if (!startDate) dayCounterElement.innerText = "0";
-      else {
-        const start = new Date(startDate);
-        const now = new Date();
-        const diffInMs = now.setHours(0,0,0,0) - start.setHours(0,0,0,0);
-        const diffInDays = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-        dayCounterElement.innerText = (lastCheckinDate === today) ? diffInDays + 1 : diffInDays;
-      }
-
-      if (lastCheckinDate === today) {
-        if(checkinBtn) { checkinBtn.disabled = true; checkinBtn.style.opacity = "0.5"; checkinBtn.innerText = "Checked-in"; }
-        if(statusText) { statusText.innerText = "✓ Commitment is kept."; statusText.style.color = "var(--success)"; }
-      } else {
-        if(checkinBtn) { checkinBtn.disabled = false; checkinBtn.style.opacity = "1"; checkinBtn.innerText = "Check-in"; }
-        if(statusText) { statusText.innerText = "Click to record progress."; statusText.style.color = "var(--muted)"; }
-      }
-    });
-  }
-
-  function checkIn() {
+  window.checkIn = async () => {
     const today = getTodayString();
-    if (!localStorage.getItem("startDate")) localStorage.setItem("startDate", today);
-    localStorage.setItem("lastCheckinDate", today);
+    if (!userData.startDate) userData.startDate = today;
+    userData.lastCheckinDate = today;
+    saveLocal();
+    await syncToCloud();
     updateDisplay();
-  }
+  };
 
-  function triggerRelapse() {
+  window.triggerRelapse = async () => {
     if (confirm("Reset streak?")) {
-      const today = getTodayString();
-      relapseHistory.push(today);
-      localStorage.setItem("relapseHistory", JSON.stringify(relapseHistory));
-      localStorage.removeItem("startDate"); 
-      localStorage.removeItem("lastCheckinDate");
-      location.reload();
+      userData.relapseHistory.push(getTodayString());
+      userData.startDate = null;
+      userData.lastCheckinDate = null;
+      saveLocal();
+      await syncToCloud();
+      updateDisplay();
+      renderCalendar();
     }
-  }
+  };
 
-  function logUrge(status) {
+  window.logUrge = async (status) => {
     const now = new Date();
-    const entry = {
+    userData.urges.unshift({
       status,
       date: now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
       time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-    };
-    urges.unshift(entry);
-    if (urges.length > 50) urges.pop();
-    localStorage.setItem("urges", JSON.stringify(urges));
+    });
+    if (userData.urges.length > 50) userData.urges.pop();
+    saveLocal();
+    await syncToCloud();
     renderUrges();
+    updateStatsUI();
+  };
+
+  // --- UI RENDERING ---
+  function updateDisplay() {
+    const today = getTodayString();
+    const counter = document.getElementById('dayCounter');
+    const btn = document.getElementById('btnCheckin');
+    const status = document.getElementById('checkinStatus');
+
+    if (!userData.startDate) counter.innerText = "0";
+    else {
+      const start = new Date(userData.startDate);
+      const diff = Math.round((new Date().setHours(0,0,0,0) - start.setHours(0,0,0,0)) / 86400000);
+      counter.innerText = (userData.lastCheckinDate === today) ? diff + 1 : diff;
+    }
+
+    if (userData.lastCheckinDate === today) {
+      btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Checked-in";
+      status.innerText = "✓ Commitment kept."; status.style.color = "var(--success)";
+    } else {
+      btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Check-in";
+      status.innerText = "Click to record progress."; status.style.color = "var(--muted)";
+    }
   }
 
   function renderUrges() {
     const list = document.getElementById("urgeLogList");
-    const fullList = document.getElementById("fullHistoryList");
-    const createHTML = u => `<div class="log-item ${u.status}"><span>${u.status === 'muncul' ? '⚠️ Muncul' : '✅ Mereda'}</span><span class="log-time">${u.date}<br>${u.time}</span></div>`;
-    if(list) list.innerHTML = urges.length === 0 ? `<p style="text-align:center; font-size:12px; color:var(--muted);">No history recorded yet.</p>` : urges.slice(0, 3).map(createHTML).join('');
-    if(fullList) fullList.innerHTML = urges.map(createHTML).join('');
+    const full = document.getElementById("fullHistoryList");
+    const html = u => `<div class="log-item ${u.status}"><span>${u.status==='muncul'?'⚠️ Emerge':'✅ Recede'}</span><span>${u.date} ${u.time}</span></div>`;
+    list.innerHTML = userData.urges.length ? userData.urges.slice(0,3).map(html).join('') : "<p style='text-align:center; font-size:12px;'>No logs.</p>";
+    full.innerHTML = userData.urges.map(html).join('');
   }
 
-  function showHistory() { document.getElementById("historyModal").style.display = "block"; }
-  function closeHistory() { document.getElementById("historyModal").style.display = "none"; }
-  function clearUrgeHistory() { if(confirm("Hapus?")) { urges = []; localStorage.setItem("urges", "[]"); renderUrges(); updateStatsUI(); } }
+  window.updateStatsUI = () => {
+    const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    document.getElementById('s-d-muncul').innerText = userData.urges.filter(u => u.date === today && u.status === 'muncul').length;
+    document.getElementById('s-d-mereda').innerText = userData.urges.filter(u => u.date === today && u.status === 'mereda').length;
+    document.getElementById('s-w-total').innerText = userData.urges.length;
+    document.getElementById('s-m-total').innerText = userData.urges.length;
+  };
 
-  let panicTimer;
-  function activatePanic() {
+  window.renderCalendar = () => {
+    const grid = document.getElementById('mainCalendar');
+    const now = new Date();
+    document.getElementById('calMonthName').innerText = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    grid.innerHTML = ['S','M','T','W','T','F','S'].map(d => `<div class="calendar-label">${d}</div>`).join('');
+    const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+    const total = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    for (let i = 0; i < first; i++) grid.innerHTML += `<div></div>`;
+    for (let d = 1; d <= total; d++) {
+      const dateISO = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      let cls = "cal-day";
+      if (userData.startDate && dateISO >= userData.startDate) cls += " cal-active";
+      if (userData.relapseHistory.includes(dateISO)) cls = "cal-day cal-relapse";
+      grid.innerHTML += `<div class="${cls}">${d}</div>`;
+    }
+  };
+
+  // --- UTILS (NAV, THEME, PANIC, BACKUP) ---
+  window.switchPage = (pageId, navEl) => {
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    navEl.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    if(pageId === 'insights') { renderCalendar(); updateStatsUI(); }
+  };
+
+  window.switchStats = (type, btn) => {
+    document.querySelectorAll('.stats-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.stats-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('stats-' + type).classList.add('active');
+  };
+
+  window.setTheme = (m) => {
+    document.body.className = m === 'ultra' ? 'ultra' : '';
+    localStorage.setItem('theme', m);
+  };
+  setTheme(localStorage.getItem('theme') || 'dark');
+
+  let pTimer;
+  window.activatePanic = () => {
     document.getElementById("panicMode").style.display = "block";
     let s = 30;
-    document.getElementById("breathCounter").innerText = s;
-    panicTimer = setInterval(() => {
+    pTimer = setInterval(() => {
       s--; document.getElementById("breathCounter").innerText = s;
-      if (s <= 0) { clearInterval(panicTimer); document.getElementById("panicText").innerText = "Take deep breaths."; }
+      if (s <= 0) { clearInterval(pTimer); document.getElementById("panicText").innerText = "Take deep breaths."; }
     }, 1000);
-  }
-  function exitPanic() { clearInterval(panicTimer); document.getElementById("panicMode").style.display = "none"; }
+  };
+  window.exitPanic = () => { clearInterval(pTimer); document.getElementById("panicMode").style.display = "none"; };
+
+  window.showHistory = () => document.getElementById("historyModal").style.display = "block";
+  window.closeHistory = () => document.getElementById("historyModal").style.display = "none";
+  window.clearUrgeHistory = () => { if(confirm("Clear?")) { userData.urges=[]; saveLocal(); syncToCloud(); renderUrges(); updateStatsUI(); } };
+
+  window.exportData = () => {
+    const blob = new Blob([JSON.stringify(userData)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `NeuRecovery_Backup.json`; a.click();
+  };
+  window.importData = () => document.getElementById("fileInput").click();
+  document.getElementById("fileInput").onchange = function() {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      userData = JSON.parse(e.target.result);
+      saveLocal(); await syncToCloud(); location.reload();
+    };
+    reader.readAsText(this.files[0]);
+  };
 
   setTimeout(() => {
     document.getElementById("intro").style.opacity = "0";
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
       document.getElementById("app").style.display = "block";
-      updateDisplay(); renderUrges(); updateStatsUI(); renderCalendar(); updateClock();
       document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+      updateClock();
     }, 800);
   }, 1500);
-
-  function exportData() {
-    const data = { sd: localStorage.getItem("startDate"), lc: localStorage.getItem("lastCheckinDate"), u: urges, rh: relapseHistory };
-    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click();
-  }
-  function importData() { document.getElementById("fileInput").click(); }
-  document.getElementById("fileInput").addEventListener("change", function () {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const data = JSON.parse(e.target.result);
-      if (data.sd) localStorage.setItem("startDate", data.sd);
-      if (data.lc) localStorage.setItem("lastCheckinDate", data.lc);
-      if (data.u) localStorage.setItem("urges", JSON.stringify(data.u));
-      if (data.rh) localStorage.setItem("relapseHistory", JSON.stringify(data.rh));
-      location.reload();
-    };
-    reader.readAsText(this.files[0]);
-  });
 </script>
 
 </body>
