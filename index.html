@@ -463,43 +463,44 @@ function updateDisplay() {
     const status = document.getElementById('checkinStatus');
 
     if (!userData.startDate) {
-      counter.innerText = "0";
-    } else {
-      // 1. Cari relapse paling terakhir/terbaru
-      const latestRelapse = userData.relapseHistory && userData.relapseHistory.length > 0 
-        ? userData.relapseHistory.sort().reverse()[0] 
-        : null;
-
-      // 2. Tentukan dari mana kita mulai menghitung
-      // Gunakan yang paling baru antara startDate atau latestRelapse
-      let effectiveStart = userData.startDate;
-      if (latestRelapse && latestRelapse > userData.startDate) {
-        effectiveStart = latestRelapse;
-      }
-
-      // 3. Hitung selisih hari
-      const start = new Date(effectiveStart);
-      const now = new Date();
-      const diff = Math.round((new Date().setHours(0,0,0,0) - start.setHours(0,0,0,0)) / 86400000);
-
-      // 4. Jika hari ini ada di riwayat relapse, streak wajib 0
-      if (userData.relapseHistory.includes(today)) {
         counter.innerText = "0";
-      } else {
-        // Jika sudah check-in hari ini, streak adalah selisih hari + 1
-        counter.innerText = (userData.lastCheckinDate === today) ? diff + 1 : diff;
-      }
+    } else {
+        // 1. Cari relapse paling terbaru
+        const latestRelapse = (userData.relapseHistory && userData.relapseHistory.length > 0)
+            ? userData.relapseHistory.slice().sort().reverse()[0]
+            : null;
+
+        // 2. Jika hari ini ada di riwayat relapse, streak langsung 0
+        if (userData.relapseHistory.includes(today)) {
+            counter.innerText = "0";
+        } else {
+            let startPoint;
+            if (latestRelapse && latestRelapse > userData.startDate) {
+                // Jika ada relapse setelah start date, hitung dari hari setelah relapse
+                startPoint = new Date(latestRelapse);
+            } else {
+                // Jika tidak ada relapse, hitung dari start date asli
+                startPoint = new Date(userData.startDate);
+                // Mundurkan 1 hari agar hari pertama start_date terhitung sebagai 1
+                startPoint.setDate(startPoint.getDate() - 1);
+            }
+
+            const now = new Date();
+            const diff = Math.floor((new Date().setHours(0,0,0,0) - startPoint.setHours(0,0,0,0)) / 86400000);
+            
+            // Jika belum check-in hari ini, streak belum bertambah
+            counter.innerText = (userData.lastCheckinDate === today) ? diff : Math.max(0, diff - 1);
+        }
     }
 
-    // Update tampilan tombol check-in
     if (userData.lastCheckinDate === today) {
-      btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Checked-in";
-      status.innerText = "✓ Commitment kept."; status.style.color = "var(--success)";
+        btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Checked-in";
+        status.innerText = "✓ Commitment kept."; status.style.color = "var(--success)";
     } else {
-      btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Check-in";
-      status.innerText = "Click to record progress."; status.style.color = "var(--muted)";
+        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Check-in";
+        status.innerText = "Click to record progress."; status.style.color = "var(--muted)";
     }
-  }
+}
 
   function renderUrges() {
     const list = document.getElementById("urgeLogList");
